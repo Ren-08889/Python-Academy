@@ -2612,7 +2612,7 @@
                     <span id="pretestStatus" class="status-pill not-started">กำลังโหลด...</span>
                   </div>
                   <h4>แบบทดสอบก่อนเรียน</h4>
-                  <p>ประเมินความรู้พื้นฐานภาษา Python 15 ข้อ ก่อนเริ่มฝึกกระบวนการคิดเชิงคำนวณ</p>
+                  <p>ประเมินความรู้พื้นฐานคำสั่งเงื่อนไขและการวนซ้ำ 20 ข้อ (คะแนนเต็ม 20 คะแนน)</p>
                   <button class="btn btn-primary" id="startPretestButton" onclick="startPretest()">
                     เริ่มทำแบบทดสอบ <i class='bx bx-right-arrow-alt'></i>
                   </button>
@@ -2625,7 +2625,7 @@
                     <span id="ifElseStatus" class="status-pill locked">กำลังโหลด...</span>
                   </div>
                   <h4>บทที่ 1: If-Else</h4>
-                  <p>การทำงานแบบมีเงื่อนไข ตัวดำเนินการเปรียบเทียบ ตรรกศาสตร์ and, or, not พร้อมโจทย์ 5 ข้อ</p>
+                  <p>การทำงานแบบมีเงื่อนไข ตัวดำเนินการเปรียบเทียบ ตรรกศาสตร์ and, or, not (แบบทดสอบ 15 คะแนน + โจทย์ 5 ข้อ)</p>
                   <button class="btn btn-primary" id="ifElseButton" onclick="startLesson('ifelse')">
                     เริ่มเรียน If-Else
                   </button>
@@ -2638,7 +2638,7 @@
                     <span id="forLoopStatus" class="status-pill locked">กำลังโหลด...</span>
                   </div>
                   <h4>บทที่ 2: For Loop</h4>
-                  <p>การวนซ้ำตามลำดับด้วย range(), การใช้ร่วมกับ input(), คำนวณผลรวม และสูตรคูณ 5 ข้อ</p>
+                  <p>การวนซ้ำตามลำดับด้วย range(), input(), คำนวณผลรวม และสูตรคูณ (แบบทดสอบ 15 คะแนน + โจทย์ 5 ข้อ)</p>
                   <button class="btn btn-primary" id="forButton" onclick="startLesson('for')">
                     เริ่มเรียน For Loop
                   </button>
@@ -2651,7 +2651,7 @@
                     <span id="whileStatus" class="status-pill locked">กำลังโหลด...</span>
                   </div>
                   <h4>บทที่ 3: While Loop</h4>
-                  <p>การทำงานวนซ้ำตามเงื่อนไข (Condition-controlled), Infinite Loop, break พร้อมโจทย์ 5 ข้อ</p>
+                  <p>การทำงานวนซ้ำตามเงื่อนไข (Condition-controlled), Infinite Loop, break (แบบทดสอบ 15 คะแนน + โจทย์ 5 ข้อ)</p>
                   <button class="btn btn-primary" id="whileButton" onclick="startLesson('while')">
                     เริ่มเรียน While Loop
                   </button>
@@ -2695,13 +2695,13 @@
 
               <div class="arena-header">
                 <h2>แบบทดสอบวัดความรู้ก่อนเรียน</h2>
-                <p>Pre-test Evaluation • 15 ข้อ • ไม่มีผลต่อเกรดเฉลี่ย</p>
+                <p>Pre-test Evaluation • 20 ข้อ • คะแนนเต็ม 20 คะแนน • ไม่มีผลต่อเกรดเฉลี่ย</p>
               </div>
 
               <div class="quiz-progress-hub">
                 <div class="quiz-meta">
                   <span>ความคืบหน้าในการตอบข้อสอบ</span>
-                  <strong id="questionProgress">0 / 15</strong>
+                  <strong id="questionProgress">0 / 20</strong>
                 </div>
                 <div class="track">
                   <div class="fill" id="pretestProgress" style="width: 0%;"></div>
@@ -2716,7 +2716,7 @@
 
               <div id="pretestResult" class="result-sheet" style="display: none;">
                 <h3>สรุปคะแนนแบบทดสอบ</h3>
-                <div id="pretestScore" class="score-circle">-- / 100</div>
+                <div id="pretestScore" class="score-circle">-- / 20</div>
                 <p id="pretestResultMessage" style="color: var(--text-muted); margin-bottom: 2rem;"></p>
                 <button class="btn btn-primary" onclick="backDashboard()">
                   ดำเนินการเข้าสู่บทเรียน <i class='bx bx-right-arrow-alt'></i>
@@ -2760,7 +2760,7 @@
 
               <div id="lessonResult" class="result-sheet" style="display: none; margin-top: 1.75rem;">
                 <h3>สรุปผลการประเมินแบบทดสอบท้ายบท</h3>
-                <div id="lessonScore" class="score-circle">-- / --</div>
+                <div id="lessonScore" class="score-circle">-- / 15</div>
                 <p id="lessonDetail" style="font-size: 1.1rem; margin-bottom: 1.25rem;"></p>
                 <div id="lessonMessage"></div>
                 <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap; margin-top:1.5rem;">
@@ -4522,28 +4522,39 @@
           } else if (fn === 'getPretestQuestions') {
             ok({
               success: true,
+              total: 20,
+              maxScore: 20,
               questions: [
-                { question: "1. Python เป็นภาษาโปรแกรมประเภทใด?", choices: ["ภาษาเครื่อง (Machine Language)", "ภาษาระดับสูง (High-level Language)", "ภาษาโครงสร้างเว็บ (HTML)", "ภาษาจัดการฐานข้อมูล (SQL)"] },
-                { question: "2. คำสั่งใดใช้สำหรับแสดงผลข้อความหรือข้อมูลออกทางหน้าจอ?", choices: ["input()", "show()", "print()", "display()"] },
-                { question: "3. ข้อใดเป็นการตั้งชื่อตัวแปรที่ถูกต้องตามหลักไวยากรณ์ของ Python?", choices: ["2score = 100", "student_name = 'Alex'", "class = 10", "my-score = 80"] },
-                { question: "4. ชนิดข้อมูลใดในภาษา Python ใช้สำหรับจัดเก็บข้อความตัวอักษร?", choices: ["int", "float", "str", "bool"] },
-                { question: "5. เครื่องหมายใดใช้สำหรับตรวจสอบว่าค่าสองค่ามีค่า 'เท่ากัน' หรือไม่?", choices: ["=", "==", "!=", ">="] },
-                { question: "6. คำสั่ง if ในภาษา Python ใช้สำหรับวัตถุประสงค์ใด?", choices: ["วนซ้ำการทำงานเรื่อย ๆ", "ตรวจสอบเงื่อนไขเพื่อตัดสินใจทำงาน", "รับข้อมูลจากแป้นพิมพ์", "ลบตัวแปรออกจากหน่วยความจำ"] },
-                { question: "7. ผลลัพธ์จากการประเมินค่านิพจน์ทางตรรกะ 10 >= 5 คือข้อใด?", choices: ["10", "5", "True", "False"] },
-                { question: "8. คำสั่งใดในภาษา Python ใช้สำหรับรับข้อมูลที่ผู้ใช้พิมพ์เข้ามาทางแป้นพิมพ์?", choices: ["print()", "input()", "read()", "scan()"] },
-                { question: "9. ผลลัพธ์ของนิพจน์ 7 % 3 (ตัวดำเนินการ Modulo) มีค่าเท่ากับข้อใด?", choices: ["2", "1", "2.33", "0"] },
-                { question: "10. คำสั่ง while ในภาษา Python มีหลักการทำงานอย่างไร?", choices: ["วนซ้ำการทำงานตราบใดที่เงื่อนไขยังคงเป็นจริง", "วนซ้ำเพียงครั้งเดียวแล้วหยุดเสมอ", "สร้างฟังก์ชันใหม่ขึ้นมาใช้งาน", "หยุดการทำงานของโปรแกรมทันที"] },
-                { question: "11. คำสั่งใดใช้แปลงข้อความตัวเลข '25' ให้กลายเป็นข้อมูลชนิดตัวเลขจำนวนเต็ม?", choices: ["int('25')", "float('25')", "str(25)", "bool('25')"] },
-                { question: "12. คำสั่ง for ในภาษา Python เหมาะสำหรับการทำงานในลักษณะใดมากที่สุด?", choices: ["ทำงานเมื่อเงื่อนไขเป็นเท็จเท่านั้น", "วนซ้ำตามสมาชิกในลำดับข้อมูล เช่น range หรือ list", "รับค่ารหัสผ่านจากผู้ใช้", "หยุดการประมวลผลของคอมพิวเตอร์"] },
-                { question: "13. ฟังก์ชัน range(4) ในลูป for i in range(4): จะสร้างลำดับตัวเลขใด?", choices: ["1, 2, 3, 4", "0, 1, 2, 3", "0, 1, 2, 3, 4", "1, 2, 3"] },
-                { question: "14. สัญลักษณ์ใดในภาษา Python ใช้สำหรับเขียนข้อความหมายเหตุ (Comment) บรรทัดเดียว?", choices: ["//", "/* */", "#", "--"] },
-                { question: "15. ข้อใดคือประโยชน์หลักของการใช้การวนซ้ำ (Loop) ในการเขียนโปรแกรม?", choices: ["ช่วยลดการเขียนโค้ดซ้ำซ้อนและสั่งให้ทำงานซ้ำได้อัตโนมัติ", "ช่วยแปลงโค้ด Python ให้เป็นภาษาเครื่องทันที", "ใช้ตกแต่งสีสันของหน้าต่างโปรแกรม", "ใช้ป้องกันไม่ให้เกิดข้อผิดพลาดในการเขียนโค้ด"] }
+                { question: "1. หลักการทำงานของคำสั่งเงื่อนไข (Conditional Statement) ในภาษา Python คือข้อใด?", choices: ["วนซ้ำคำสั่งเดิมตามจำนวนรอบที่กำหนด", "ตรวจสอบนิพจน์เงื่อนไขที่เป็น True หรือ False เพื่อเลือกทำงานเฉพาะบล็อกคำสั่งที่ต้องการ", "ใช้สำหรับประกาศตัวแปรเก็บข้อความ", "แปลงข้อมูลตัวเลขให้เป็นทศนิยม"] },
+                { question: "2. ในภาษา Python สิ่งใดใช้กำหนดขอบเขตของชุดคำสั่งที่อยู่ภายในบล็อกของคำสั่ง if?", choices: ["เครื่องหมายวงเล็บปีกกา { }", "คำสั่ง begin และ end", "การย่อหน้า (Indentation) หลังเครื่องหมายโคลอน (:)", "เครื่องหมายอัฒภาค (;)"] },
+                { question: "3. ข้อใดอธิบายความแตกต่างระหว่างคำสั่ง if กับ if-else ได้ถูกต้องที่สุด?", choices: ["if ทำงานเฉพาะเมื่อเงื่อนไขเป็นจริง ส่วน if-else มีทางเลือกสำรองให้ทำเมื่อเงื่อนไขเป็นเท็จด้วย", "if ใช้กับตัวเลขเท่านั้น ส่วน if-else ใช้กับข้อความเท่านั้น", "if-else สามารถวนซ้ำคำสั่งได้โดยอัตโนมัติ", "ไม่มีความแตกต่างกัน ใช้แทนกันได้ทุกกรณี"] },
+                { question: "4. หากต้องการตรวจสอบเงื่อนไขหลายกรณีต่อเนื่องกันและเลือกทำงานเพียง 1 กรณีที่เป็นจริงกรณีแรก ควรใช้โครงสร้างใด?", choices: ["if อย่างเดียว", "if-else ซ้อน 1 ชั้น", "if-elif-else", "while"] },
+                { question: "5. พิจารณาโค้ดต่อไปนี้:\nx = 12\nif x > 10:\n    print('ผ่าน')\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["ผ่าน", "ไม่ผ่าน", "12", "ไม่แสดงผลลัพธ์ใด ๆ"] },
+                { question: "6. พิจารณาโค้ดต่อไปนี้:\nscore = 45\nif score >= 50:\n    print('Pass')\nelse:\n    print('Fail')\nผลลัพธ์ที่แสดงออกทางหน้าจอคือข้อใด?", choices: ["Pass", "Fail", "45", "Pass Fail"] },
+                { question: "7. พิจารณาโค้ดต่อไปนี้:\ntemp = 28\nif temp >= 35:\n    print('ร้อนมาก')\nelif temp >= 25:\n    print('อุ่น')\nelse:\n    print('เย็น')\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["ร้อนมาก", "อุ่น", "เย็น", "ร้อนมาก อุ่น"] },
+                { question: "8. ในโครงสร้าง if-elif-else ข้อใดกล่าวถูกต้องเกี่ยวกับลำดับการประเมินเงื่อนไข?", choices: ["ตรวจสอบจากล่างขึ้นบนเสมอ", "ทำงานทุกบล็อกที่เป็นจริงพร้อมกัน", "ข้ามเงื่อนไขแรกไปตรวจสอบ else ก่อน", "ตรวจสอบจากบนลงล่าง เมื่อพบเงื่อนไขแรกที่เป็นจริงจะทำงานบล็อกนั้นแล้วข้ามบล็อกที่เหลือ"] },
+                { question: "9. ร้านค้ามีส่วนลดเมื่อยอดซื้อ total >= 500 และเป็นสมาชิก (member == True) เงื่อนไขใดเขียนใน Python ได้ถูกต้อง?", choices: ["if total >= 500 or member == True:", "if total >= 500 and member == True:", "if total > 500 not member:", "if total = 500 and member = True:"] },
+                { question: "10. หากต้องการเขียนโปรแกรมตรวจสอบว่าจำนวนเต็ม n เป็นเลขคู่หรือไม่ เงื่อนไข if ที่ถูกต้องคือข้อใด?", choices: ["if n % 2 == 0:", "if n / 2 == 0:", "if n % 2 == 1:", "if n == 2:"] },
+                { question: "11. ข้อใดคือหลักการทำงานของการวนซ้ำ (Loop) ในภาษา Python?", choices: ["ตรวจสอบชนิดข้อมูลของตัวแปร", "หยุดการทำงานของโปรแกรมทันที", "ทำงานชุดคำสั่งเดิมซ้ำ ๆ อัตโนมัติตามเงื่อนไขหรือจำนวนรอบที่กำหนด", "เรียงลำดับตัวอักษรในข้อความ"] },
+                { question: "12. คำสั่งใดใช้สำหรับหยุดออกจาก Loop ทันทีแม้เงื่อนไขหรือรอบการทำงานยังไม่สิ้นสุด?", choices: ["continue", "break", "pass", "stop"] },
+                { question: "13. ความแตกต่างหลักระหว่าง While Loop และ For Loop ในภาษา Python คือข้อใด?", choices: ["While Loop ใช้กับข้อความเท่านั้น ส่วน For Loop ใช้กับตัวเลขเท่านั้น", "While Loop วนซ้ำตราบที่เงื่อนไขเป็นจริง (เหมาะเมื่อไม่ทราบจำนวนรอบแน่นอน) ส่วน For Loop วนซ้ำตามลำดับข้อมูลหรือจำนวนรอบที่ทราบ", "For Loop ไม่สามารถใช้ร่วมกับ if ได้", "While Loop ทำงานเพียงรอบเดียวเสมอ"] },
+                { question: "14. สถานการณ์ใดเหมาะสมกับการเลือกใช้ For Loop มากกว่า While Loop?", choices: ["วนรับรหัสผ่านจนกว่าผู้ใช้จะพิมพ์ถูกต้อง", "รออ่านค่าเซนเซอร์จนกว่าอุณหภูมิจะเกิน 40 องศา", "ต้องการแสดงผลตัวเลข 1 ถึง 10 หรือวนอ่านสมาชิกทุกตัวในลิสต์", "รันระบบเกมตลอดเวลาจนกว่าผู้ใช้จะกดออก"] },
+                { question: "15. พิจารณาโค้ดต่อไปนี้:\ni = 1\nwhile i <= 3:\n    print(i, end=' ')\n    i += 1\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["1 2 3", "0 1 2 3", "1 2", "1 2 3 4"] },
+                { question: "16. หากเขียนโค้ด:\nx = 1\nwhile x < 5:\n    print(x)\nจะเกิดปัญหาใดขึ้น?", choices: ["โปรแกรมพิมพ์ 1 ถึง 4 แล้วหยุด", "เกิด SyntaxError", "โปรแกรมไม่ทำงานเลย", "เกิด Infinite Loop เพราะไม่มีการปรับค่า x ในลูป"] },
+                { question: "17. คำสั่ง for i in range(4): จะสร้างลำดับค่า i ในแต่ละรอบเป็นตัวเลขใดบ้าง?", choices: ["1, 2, 3, 4", "0, 1, 2, 3", "0, 1, 2, 3, 4", "1, 2, 3"] },
+                { question: "18. พิจารณาโค้ดต่อไปนี้:\nfor n in [2, 4, 6]:\n    print(n + 1, end=' ')\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["2 4 6", "3 4 5", "3 5 7", "1 3 5"] },
+                { question: "19. พิจารณาโค้ดต่อไปนี้:\ntotal = 0\nfor i in range(1, 5):\n    total += i\nprint(total)\nค่าที่พิมพ์ออกมาคือเท่าใด?", choices: ["6", "10", "15", "4"] },
+                { question: "20. หากต้องการนับจำนวนคะแนนที่ผ่านเกณฑ์ (>= 60) จาก scores = [55, 70, 82, 40] ควรวางคำสั่ง if s >= 60: ไว้ที่ใด?", choices: ["ภายในบล็อกของคำสั่ง for s in scores:", "ก่อนเริ่มต้นคำสั่ง for", "หลังจบคำสั่ง for", "ไว้ในคำสั่ง print()"] }
               ]
             });
           } else if (fn === 'submitPretest') {
             mockProgress.pretestStatus = "COMPLETED";
             if (mockProgress.ifElseStatus === "LOCKED") mockProgress.ifElseStatus = "UNLOCKED";
-            ok({ success: true, score: 80, correct: 12, total: 15, message: "ผ่านเกณฑ์พื้นฐาน ยินดีต้อนรับสู่บทเรียน" });
+            const preAns = [1, 2, 0, 2, 0, 1, 1, 3, 1, 0, 2, 1, 1, 2, 0, 3, 1, 2, 1, 0];
+            const given = Array.isArray(args && args[1]) ? args[1] : [];
+            const correct = given.length === 20 ? given.reduce((n, a, i) => n + (Number(a) === preAns[i] ? 1 : 0), 0) : 16;
+            const percent = Math.round((correct / 20) * 100);
+            ok({ success: true, score: correct, maxScore: 20, percent: percent, correct: correct, total: 20, message: "บันทึกคะแนน Pre-test เรียบร้อยแล้ว (" + correct + "/20 คะแนน)" });
           } else if (fn === 'getWhileLesson') {
             const qs = [
   // [จุดประสงค์ 1: เข้าใจหลักการวนซ้ำ (2 ข้อ)]
@@ -4999,15 +5010,50 @@
           } else if (fn === 'submitIfElseQuiz') {
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
             window._mockQuizPassed['ifelse'] = true;
-            ok({ success: true, score: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
+            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
           } else if (fn === 'submitWhileQuiz') {
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
             window._mockQuizPassed['while'] = true;
-            ok({ success: true, score: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
+            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
           } else if (fn === 'submitForQuiz') {
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
             window._mockQuizPassed['for'] = true;
-            ok({ success: true, score: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
+            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
+          } else if (fn === 'getPosttest') {
+            ok({
+              success: true,
+              total: 20,
+              maxScore: 20,
+              questions: [
+                { question: "1. เมื่อโปรแกรมประเมินเงื่อนไขหลังคำสั่ง if แล้วได้ผลลัพธ์เป็น False และไม่มีบล็อก else โปรแกรมจะทำงานอย่างไร?", choices: ["หยุดการทำงานของโปรแกรมทันที", "แสดงข้อความ Error", "ข้ามชุดคำสั่งภายใน if ไปทำคำสั่งถัดไปนอกบล็อก", "วนซ้ำเงื่อนไขเดิมอีกครั้ง"] },
+                { question: "2. นิพจน์เปรียบเทียบใดในภาษา Python ที่ประเมินผลลัพธ์แล้วได้ค่าเป็น True?", choices: ["10 < 5", "15 >= 15 and 8 != 10", "7 == 9", "20 <= 10"] },
+                { question: "3. เมื่อใดจึงควรเลือกใช้โครงสร้าง if-elif-else แทนการใช้ if-else เพียงอย่างเดียว?", choices: ["เมื่อต้องการให้คำสั่งทำงานวนซ้ำหลายรอบ", "เมื่อมีทางเลือกมากกว่า 2 กรณีที่ต้องตรวจสอบเงื่อนไขต่อเนื่องกัน", "เมื่อต้องการรับข้อมูลจากผู้ใช้ทางแป้นพิมพ์", "เมื่อต้องการทำงานเพียงทางเลือกเดียวเท่านั้น"] },
+                { question: "4. ความแตกต่างของผลลัพธ์ระหว่างการใช้ if หลายชุดเรียงกัน กับการใช้ if-elif-else คือข้อใด?", choices: ["if หลายชุดจะตรวจทุกเงื่อนไข ส่วน if-elif-else เมื่อเจอเงื่อนไขจริงแรกแล้วจะหยุดตรวจเงื่อนไขถัดไปทันที", "if หลายชุดทำงานเร็วกว่าเสมอ", "if-elif-else จะทำงานทุกบล็อกที่เป็นจริงพร้อมกัน", "ทั้งสองแบบให้ผลลัพธ์เหมือนกันทุกกรณี"] },
+                { question: "5. พิจารณาโค้ดต่อไปนี้:\nage = 16\nif age >= 18:\n    print('ผู้ใหญ่')\nelse:\n    print('เยาวชน')\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["ผู้ใหญ่", "เยาวชน", "16", "ไม่แสดงผลลัพธ์"] },
+                { question: "6. ข้อใดเขียนคำสั่ง if เพื่อตรวจสอบว่าตัวแปร pin มีค่าเท่ากับ '9999' ได้ถูกต้องตามไวยากรณ์ Python?", choices: ["if pin = '9999':", "if pin == '9999'", "if pin == '9999':", "if '9999' => pin:"] },
+                { question: "7. พิจารณาโค้ดต่อไปนี้:\nscore = 72\nif score >= 80:\n    print('A')\nelif score >= 70:\n    print('B')\nelif score >= 60:\n    print('C')\nelse:\n    print('F')\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["A", "B", "C", "F"] },
+                { question: "8. พิจารณาโค้ดต่อไปนี้:\nnum = 0\nif num > 0:\n    print('บวก')\nelif num < 0:\n    print('ลบ')\nelse:\n    print('ศูนย์')\nผลลัพธ์ที่พิมพ์คือข้อใด?", choices: ["บวก", "ลบ", "ศูนย์", "0"] },
+                { question: "9. ระบบแจ้งเตือนความเร็ว: ถ้า speed > 120 แสดง 'อันตราย', elif speed > 80 แสดง 'เร็วเกินกำหนด', else แสดง 'ปกติ' หากป้อน speed = 95 จะได้ผลลัพธ์ใด?", choices: ["อันตราย", "เร็วเกินกำหนด", "ปกติ", "อันตราย เร็วเกินกำหนด"] },
+                { question: "10. สวนสนุกให้เข้าฟรีเมื่ออายุน้อยกว่า 12 ปี (age < 12) หรืออายุตั้งแต่ 60 ปีขึ้นไป (age >= 60) ข้อใดเขียนเงื่อนไขได้ถูกต้อง?", choices: ["if age < 12 or age >= 60:", "if age < 12 and age >= 60:", "if age <= 12 not age >= 60:", "if age > 12 or age < 60:"] },
+                { question: "11. หากไม่ใช้คำสั่ง Loop ในการพิมพ์ตัวเลข 1 ถึง 100 จะส่งผลเสียอย่างไรต่อการเขียนโปรแกรม?", choices: ["คอมพิวเตอร์ไม่สามารถแสดงตัวเลขเกิน 10 ได้", "ต้องเขียนคำสั่งซ้ำซ้อนจำนวนมาก แก้ไขและดูแลโค้ดได้ยาก", "ตัวแปรไม่สามารถเก็บค่าตัวเลขได้", "คำสั่ง print() จะใช้งานไม่ได้"] },
+                { question: "12. คำสั่ง continue ภายในลูปมีหน้าที่อย่างไร?", choices: ["หยุดออกจากลูปทันที", "ลบตัวแปรนับรอบ", "ข้ามคำสั่งที่เหลือในรอบปัจจุบันแล้วไปเริ่มต้นตรวจสอบรอบถัดไปทันที", "ย้อนกลับไปบรรทัดแรกของโปรแกรม"] },
+                { question: "13. สถานการณ์ใดเหมาะสมกับการเลือกใช้ While Loop มากที่สุด?", choices: ["วนรับรหัสผ่านจากผู้ใช้ซ้ำ ๆ จนกว่าจะป้อนถูกต้อง (ไม่ทราบจำนวนรอบล่วงหน้า)", "พิมพ์คำว่า Hello จำนวน 5 ครั้ง", "วนอ่านชื่อนักเรียนในลิสต์ 10 คน", "พิมพ์ตัวเลข 1 ถึง 20"] },
+                { question: "14. หากต้องการประมวลผลข้อมูลสินค้าทุกรายการที่มีอยู่แล้วใน items = ['A', 'B', 'C'] คำสั่งใดเหมาะสมและสั้นที่สุด?", choices: ["while items > 0:", "if item in items:", "for item in items:", "elif item in items:"] },
+                { question: "15. พิจารณาโค้ดต่อไปนี้:\nc = 5\nwhile c > 0:\n    print(c, end=' ')\n    c -= 2\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["5 4 3 2 1", "5 3 1", "5 3", "3 1"] },
+                { question: "16. พิจารณาโค้ดต่อไปนี้:\ni = 0\nwhile i < 4:\n    i += 1\n    if i == 2:\n        continue\n    print(i, end=' ')\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["1 2 3 4", "0 1 3 4", "1 3 4", "1"] },
+                { question: "17. คำสั่ง range(2, 10, 2) ในลูป for i in range(2, 10, 2): จะสร้างตัวเลขใดบ้าง?", choices: ["2, 4, 6, 8", "2, 4, 6, 8, 10", "0, 2, 4, 6, 8", "1, 3, 5, 7, 9"] },
+                { question: "18. พิจารณาโค้ดต่อไปนี้:\nfor i in range(1, 6):\n    if i == 4:\n        break\n    print(i, end=' ')\nผลลัพธ์ที่ได้คือข้อใด?", choices: ["1 2 3 4 5", "1 2 3", "1 2 3 4", "4 5"] },
+                { question: "19. พิจารณาโค้ดต่อไปนี้:\nsum_even = 0\nfor x in range(1, 7):\n    if x % 2 == 0:\n        sum_even += x\nprint(sum_even)\nค่าที่พิมพ์ออกมาคือเท่าใด?", choices: ["6", "10", "12", "21"] },
+                { question: "20. ออมเงินเดือนละ 200 บาท มีเริ่มต้น 100 บาท ต้องการให้ครบ 700 บาท:\nmoney = 100\nmonths = 0\nwhile money < 700:\n    money += 200\n    months += 1\nprint(months)\nค่า months ที่แสดงคือเท่าใด?", choices: ["2", "3", "4", "5"] }
+              ]
+            });
+          } else if (fn === 'submitPosttest') {
+            const postAns = [2, 1, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 0, 2, 1, 2, 0, 1, 2, 1];
+            const given = Array.isArray(args && args[1]) ? args[1] : [];
+            const correct = given.length === 20 ? given.reduce((n, a, i) => n + (Number(a) === postAns[i] ? 1 : 0), 0) : 18;
+            const percent = Math.round((correct / 20) * 100);
+            const passed = correct >= 12;
+            ok({ success: true, correct, total: 20, maxScore: 20, score: correct, percent, minPass: 12, passed, message: passed ? "ยินดีด้วย! คุณเรียนผ่านหลักสูตร PYTHON CODE ACADEMY แล้ว" : "ยังไม่ผ่านเกณฑ์ 60% (ต้องได้อย่างน้อย 12/20 คะแนน) สามารถทบทวนและทำใหม่ได้" });
           } else if (fn === 'getCodingChallenges') {
             const lKey = (args && args[1]) || 'ifelse';
             if (!window._mockPassedTasks) window._mockPassedTasks = {};
@@ -6056,12 +6102,14 @@
           return;
         }
 
-        document.getElementById("pretestScore").textContent = `${r.score} / 100 คะแนน`;
-        document.getElementById("pretestResultMessage").innerHTML = `ตอบถูกทั้งหมด <strong>${r.correct}</strong> จาก ${r.total} ข้อ — ${r.message}`;
+        const totalQ = r.total || pretestQuestions.length || 20;
+        const pct = r.percent !== undefined ? r.percent : Math.round((r.correct / totalQ) * 100);
+        document.getElementById("pretestScore").textContent = `${r.score} / ${totalQ} คะแนน`;
+        document.getElementById("pretestResultMessage").innerHTML = `ตอบถูกทั้งหมด <strong>${r.correct}</strong> จาก ${totalQ} ข้อ (${pct}%) — ${r.message}`;
         document.getElementById("pretestResult").style.display = "block";
         b.style.display = "none";
         showActionNotice(
-          `ทำแบบทดสอบก่อนเรียนเสร็จแล้ว ${r.score}/100 คะแนน บทเรียนถัดไปที่ปลดล็อกคือ บทที่ 1: If-Else`,
+          `ทำแบบทดสอบก่อนเรียนเสร็จแล้ว ${r.score}/${totalQ} คะแนน บทเรียนถัดไปที่ปลดล็อกคือ บทที่ 1: If-Else`,
           "เริ่มบทที่ 1: If-Else",
           () => startLesson("ifelse"),
           "กลับไป Dashboard",
@@ -7246,7 +7294,7 @@ __buf.getvalue()`);
           return;
         }
         showArea("lessonArea");
-        area.innerHTML = '<div class="arena-container"><div class="arena-header"><h2>🎓 แบบทดสอบวัดผลหลังเรียน (Post-test)</h2><p>10 ข้อ • คะแนนเต็ม 100 • เกณฑ์ผ่าน 60 คะแนน</p></div><div id="posttestQuestions"></div><button class="btn btn-accent" style="width:100%; margin-top:1.5rem; font-size:1.05rem;" onclick="submitPosttestNow()">ส่งแบบทดสอบหลังเรียน <i class="bx bx-check-circle"></i></button><div id="posttestResult" style="margin-top:1.5rem"></div></div>';
+        area.innerHTML = '<div class="arena-container"><div class="arena-header"><h2>🎓 แบบทดสอบวัดผลหลังเรียน (Post-test)</h2><p>20 ข้อ • คะแนนเต็ม 20 คะแนน • เกณฑ์ผ่าน 12 คะแนน (60%)</p></div><div id="posttestQuestions"></div><button class="btn btn-accent" style="width:100%; margin-top:1.5rem; font-size:1.05rem;" onclick="submitPosttestNow()">ส่งแบบทดสอบหลังเรียน <i class="bx bx-check-circle"></i></button><div id="posttestResult" style="margin-top:1.5rem"></div></div>';
         window.posttestQuestions = r.questions || [];
         renderQuestions(window.posttestQuestions, "posttestQuestions", "post_");
       }, e => {
@@ -7256,7 +7304,7 @@ __buf.getvalue()`);
       });
     }
     function escapeHtml(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-    function submitPosttestNow(){const answers=[];for(let i=0;i<10;i++){const el=document.querySelector(`input[name="post_${i}"]:checked`);if(!el){alert("กรุณาตอบให้ครบทั้ง 10 ข้อ");return;}answers.push(Number(el.value));}runServer("submitPosttest",[sessionToken,answers],r=>{if(!r.success){alert(r.message);return;}document.getElementById("posttestResult").innerHTML=`<h3>${r.message}</h3><p>คะแนน ${r.score}/100 (${r.correct}/10 ข้อ)</p>${r.passed?'<div class="toast-msg">🎓 เรียนจบหลักสูตร PYTHON CODE ACADEMY แล้ว</div>':''}`;},e=>alert(e.message));}
+    function submitPosttestNow(){const totalQ=(window.posttestQuestions&&window.posttestQuestions.length)||20;const answers=[];for(let i=0;i<totalQ;i++){const el=document.querySelector(`input[name="post_${i}"]:checked`);if(!el){alert("กรุณาตอบให้ครบทั้ง "+totalQ+" ข้อ");return;}answers.push(Number(el.value));}runServer("submitPosttest",[sessionToken,answers],r=>{if(!r.success){alert(r.message);return;}const totalRes=r.total||totalQ;const pct=r.percent!==undefined?r.percent:Math.round((r.correct/totalRes)*100);document.getElementById("posttestResult").innerHTML=`<h3>${r.message}</h3><p>คะแนน ${r.score}/${totalRes} คะแนน (${r.correct}/${totalRes} ข้อ • ${pct}%)</p>${r.passed?'<div class="toast-msg">🎓 เรียนจบหลักสูตร PYTHON CODE ACADEMY แล้ว</div>':''}`;},e=>alert(e.message));}
 
     function loadSnippetToIde(rawCode, title) {
       activeSnippetForRun = rawCode;
@@ -7673,14 +7721,14 @@ __buf.getvalue()`);
       gate.style.display = "block";
 
       const lesson = LESSONS[type] || {};
-      const totalQ = lessonQuestions.length || (type === "ifelse" ? 5 : 15);
+      const totalQ = lessonQuestions.length || 15;
       const minPass = lessonData?.minPassQuestions || Math.ceil(totalQ * 0.6);
 
       const titleEl = document.getElementById("lessonQuizHeaderTitle");
-      if (titleEl) titleEl.innerHTML = `✍️ แบบทดสอบท้ายบทเรียน: ${lesson.title || type} (${totalQ} ข้อ)`;
+      if (titleEl) titleEl.innerHTML = `✍️ แบบทดสอบท้ายบทเรียน: ${lesson.title || type} (${totalQ} ข้อ • คะแนนเต็ม ${totalQ} คะแนน)`;
 
       const criteriaEl = document.getElementById("lessonQuizPassingCriteria");
-      if (criteriaEl) criteriaEl.textContent = `เกณฑ์การผ่าน 60% ขึ้นไป (${minPass} จาก ${totalQ} ข้อ) เพื่อปลดล็อกโจทย์เขียนโค้ดปฏิบัติ`;
+      if (criteriaEl) criteriaEl.textContent = `เกณฑ์การผ่าน 60% ขึ้นไป (${minPass} จาก ${totalQ} คะแนน) เพื่อปลดล็อกโจทย์เขียนโค้ดปฏิบัติ`;
 
       const statusAlert = document.getElementById("lessonQuizStatusAlert");
       if (statusAlert) {
@@ -7740,28 +7788,30 @@ __buf.getvalue()`);
           return;
         }
 
-        const totalQ = r.total || lessonQuestions.length;
+        const totalQ = r.total || lessonQuestions.length || 15;
         const minPass = r.minPassQuestions || Math.ceil(totalQ * 0.6);
+        const scoreVal = (r.score !== undefined && r.score <= totalQ) ? r.score : r.correct;
+        const pctVal = r.percent !== undefined ? r.percent : Math.round((r.correct / totalQ) * 100);
         const scoreCircle = document.getElementById("lessonScore");
         if (scoreCircle) {
-          scoreCircle.textContent = `${r.correct} / ${totalQ}`;
+          scoreCircle.textContent = `${scoreVal} / ${totalQ}`;
           scoreCircle.style.color = r.passed ? "#10B981" : "#EF4444";
           scoreCircle.style.borderColor = r.passed ? "#10B981" : "#EF4444";
         }
 
         const detailP = document.getElementById("lessonDetail");
         if (detailP) {
-          detailP.innerHTML = `ได้คะแนน <strong>${r.score}%</strong> • สถานะ: <span style="color:${r.passed ? '#10B981' : '#EF4444'}; font-weight:700;">${r.passed ? "✓ ผ่านเกณฑ์ 60% ขึ้นไป" : "ยังไม่ผ่านเกณฑ์ (ต้องการ 60% หรือ " + minPass + " ข้อขึ้นไป)"}</span>`;
+          detailP.innerHTML = `ได้คะแนน <strong>${scoreVal} / ${totalQ} คะแนน</strong> (${pctVal}%) • สถานะ: <span style="color:${r.passed ? '#10B981' : '#EF4444'}; font-weight:700;">${r.passed ? "✓ ผ่านเกณฑ์ (" + minPass + "/" + totalQ + " คะแนนขึ้นไป)" : "ยังไม่ผ่านเกณฑ์ (ต้องการ " + minPass + "/" + totalQ + " คะแนน หรือ 60% ขึ้นไป)"}</span>`;
         }
 
         const msgDiv = document.getElementById("lessonMessage");
         if (msgDiv) {
           msgDiv.innerHTML = r.passed
             ? `<div class="toast-msg" style="background: var(--status-success-bg); color: var(--status-success); border: 1px solid rgba(16, 185, 129, 0.3);">
-                 <i class='bx bx-party'></i> <strong>ยอดเยี่ยมมาก!</strong> คุณสอบผ่านแบบทดสอบท้ายบทแล้ว (${r.score}%) ระบบได้ปลดล็อกโจทย์เขียนโค้ดปฏิบัติ 5 ข้อด้านล่างเรียบร้อยแล้ว
+                 <i class='bx bx-party'></i> <strong>ยอดเยี่ยมมาก!</strong> คุณสอบผ่านแบบทดสอบท้ายบทแล้ว (${scoreVal}/${totalQ} คะแนน • ${pctVal}%) ระบบได้ปลดล็อกโจทย์เขียนโค้ดปฏิบัติ 5 ข้อด้านล่างเรียบร้อยแล้ว
                </div>`
             : `<div class="toast-msg toast-danger">
-                 <i class='bx bx-error-circle'></i> ยังไม่ผ่านเกณฑ์ 60% (ได้ ${r.correct}/${totalQ} ข้อ คิดเป็น ${r.score}%) กรุณาทบทวนบทเรียนแล้วกดปุ่ม "ทำแบบทดสอบอีกครั้ง" เพื่อปลดล็อกภาคปฏิบัติ
+                 <i class='bx bx-error-circle'></i> ยังไม่ผ่านเกณฑ์ 60% (ได้ ${scoreVal}/${totalQ} คะแนน คิดเป็น ${pctVal}%) กรุณาทบทวนบทเรียนแล้วกดปุ่ม "ทำแบบทดสอบอีกครั้ง" เพื่อปลดล็อกภาคปฏิบัติ
                </div>`;
         }
 
