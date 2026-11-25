@@ -2759,6 +2759,7 @@
                 <span id="lessonQuizPassingCriteria">เกณฑ์การผ่าน 60% ขึ้นไป (9 จาก 15 คะแนน)</span>
               </div>
 
+              <div id="lessonQuizLockBox" style="display:none; margin-top:1rem;"></div>
               <div id="lessonQuizStatusAlert" style="display:none; margin-top: 1rem;"></div>
 
               <div id="lessonQuestions"></div>
@@ -2776,7 +2777,10 @@
                   <button class="btn btn-secondary" id="retryQuizBtn" onclick="retryLessonQuiz()" style="display:none;">
                     <i class='bx bx-refresh'></i> ทำแบบทดสอบอีกครั้ง
                   </button>
-                  <button class="btn btn-primary" id="gotoPracticalBtn" onclick="scrollToPracticalSection()" style="display:none;">
+                  <button class="btn btn-primary" id="gotoNextLessonBtn" onclick="continueToNextLesson(currentLesson)" style="display:none;">
+                    เข้าสู่ขั้นตอนถัดไป <i class='bx bx-right-arrow-alt'></i>
+                  </button>
+                  <button class="btn btn-secondary" id="gotoPracticalBtn" onclick="scrollToPracticalSection()" style="display:none;">
                     กลับไปดูแบบทดสอบปฏิบัติด้านบน <i class='bx bx-code-block'></i>
                   </button>
                   <button class="btn btn-secondary" onclick="scrollToTheorySection()">
@@ -4703,11 +4707,16 @@
   }
 ];
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
+            const pCountWhile = (window._mockPassedTasks && window._mockPassedTasks['while']) ? window._mockPassedTasks['while'].size : 0;
+            const practWhile = currentUserRole === "admin" || pCountWhile >= 5;
             ok({
               success: true,
               lessonKey: 'while',
+              practicalPassed: practWhile,
+              practicalCompletedCount: pCountWhile,
+              practicalTotal: 5,
               quizPassed: !!window._mockQuizPassed['while'],
-              questions: qs.map((q, i) => ({ id: i, question: q.question, choices: q.choices })),
+              questions: practWhile ? qs.map((q, i) => ({ id: i, question: q.question, choices: q.choices })) : [],
               totalQuestions: qs.length,
               minPassQuestions: Math.ceil(qs.length * 0.6),
               passScore: 60
@@ -4848,11 +4857,16 @@
   }
 ];
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
+            const pCountFor = (window._mockPassedTasks && window._mockPassedTasks['for']) ? window._mockPassedTasks['for'].size : 0;
+            const practFor = currentUserRole === "admin" || pCountFor >= 5;
             ok({
               success: true,
               lessonKey: 'for',
+              practicalPassed: practFor,
+              practicalCompletedCount: pCountFor,
+              practicalTotal: 5,
               quizPassed: !!window._mockQuizPassed['for'],
-              questions: qs.map((q, i) => ({ id: i, question: q.question, choices: q.choices })),
+              questions: practFor ? qs.map((q, i) => ({ id: i, question: q.question, choices: q.choices })) : [],
               totalQuestions: qs.length,
               minPassQuestions: Math.ceil(qs.length * 0.6),
               passScore: 60
@@ -5020,11 +5034,16 @@
   }
 ];
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
+            const pCountIfElse = (window._mockPassedTasks && window._mockPassedTasks['ifelse']) ? window._mockPassedTasks['ifelse'].size : 0;
+            const practIfElse = currentUserRole === "admin" || pCountIfElse >= 5;
             ok({
               success: true,
               lessonKey: 'ifelse',
+              practicalPassed: practIfElse,
+              practicalCompletedCount: pCountIfElse,
+              practicalTotal: 5,
               quizPassed: !!window._mockQuizPassed['ifelse'],
-              questions: qs.map((q, i) => ({ id: i, question: q.question, choices: q.choices })),
+              questions: practIfElse ? qs.map((q, i) => ({ id: i, question: q.question, choices: q.choices })) : [],
               totalQuestions: qs.length,
               minPassQuestions: Math.ceil(qs.length * 0.6),
               passScore: 60
@@ -5032,15 +5051,21 @@
           } else if (fn === 'submitIfElseQuiz') {
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
             window._mockQuizPassed['ifelse'] = true;
-            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
+            mockProgress.ifElseStatus = 'COMPLETED';
+            if (mockProgress.forLoopStatus === 'LOCKED') mockProgress.forLoopStatus = 'UNLOCKED';
+            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, unlockedNext: true, minPassQuestions: 9 });
           } else if (fn === 'submitWhileQuiz') {
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
             window._mockQuizPassed['while'] = true;
-            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
+            mockProgress.whileStatus = 'COMPLETED';
+            if (mockProgress.activityStatus === 'LOCKED') mockProgress.activityStatus = 'UNLOCKED';
+            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, unlockedNext: true, minPassQuestions: 9 });
           } else if (fn === 'submitForQuiz') {
             if (!window._mockQuizPassed) window._mockQuizPassed = {};
             window._mockQuizPassed['for'] = true;
-            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, minPassQuestions: 9 });
+            mockProgress.forLoopStatus = 'COMPLETED';
+            if (mockProgress.whileStatus === 'LOCKED') mockProgress.whileStatus = 'UNLOCKED';
+            ok({ success: true, score: 15, maxScore: 15, percent: 100, correct: 15, total: 15, passed: true, unlockedNext: true, minPassQuestions: 9 });
           } else if (fn === 'getPosttest') {
             ok({
               success: true,
@@ -5114,11 +5139,6 @@
             if (!window._mockPassedTasks[lKey]) window._mockPassedTasks[lKey] = new Set();
             window._mockPassedTasks[lKey].add(taskNo);
             const pCount = window._mockPassedTasks[lKey].size;
-            if (pCount === 5) {
-              if (lKey === 'ifelse') { mockProgress.ifElseStatus = 'COMPLETED'; mockProgress.forLoopStatus = 'UNLOCKED'; }
-              else if (lKey === 'for') { mockProgress.forLoopStatus = 'COMPLETED'; mockProgress.whileStatus = 'UNLOCKED'; }
-              else if (lKey === 'while') { mockProgress.whileStatus = 'COMPLETED'; mockProgress.activityStatus = 'UNLOCKED'; }
-            }
             ok({
               success: true,
               passed: true,
@@ -5127,8 +5147,9 @@
               passedCount: pCount,
               lessonScore: pCount * 2,
               lessonTotal: 10,
+              unlockedQuiz: pCount === 5,
               unlockedNext: pCount === 5,
-              message: pCount === 5 ? "ผ่านครบทั้ง 5 ข้อแล้ว! ปลดล็อกขั้นตอนถัดไปเรียบร้อย" : "รันผ่านแล้ว! ไปทำข้อถัดไปได้เลย"
+              message: pCount === 5 ? "ผ่านครบทั้ง 5 ข้อแล้ว! ปลดล็อกแบบทดสอบท้ายบทเรียน (15 ข้อ) เรียบร้อย" : "รันผ่านแล้ว! ไปทำข้อถัดไปได้เลย"
             });
           } else if (fn === 'getLessonVideos') {
             ok({ success: true, videos: [] });
@@ -6642,9 +6663,6 @@ __buf.getvalue()`);
 
         const isAllDone = Number(r.completedCount) >= 5 || (Array.isArray(r.tasks) && r.tasks.length === 5 && r.tasks.every(t => t.completed));
         if (isAllDone) {
-          const nextBtnText = type === "while" ? "เข้าสู่ Cyber Code Arena" : "เข้าสู่บทเรียนถัดไป";
-          const nextIcon = type === "while" ? "bx-trophy" : "bx-right-arrow-alt";
-
           const completionCard = document.createElement("div");
           completionCard.className = "theory-card";
           completionCard.id = "lessonCompletionCard";
@@ -6654,14 +6672,14 @@ __buf.getvalue()`);
               <i class='bx bx-check-circle'></i>
             </div>
             <h3 style="color:#0F172A; font-size:1.35rem; margin-bottom:0.4rem; font-weight:700;">
-              🎉 ยินดีด้วย! คุณผ่านโจทย์เขียนโค้ดครบทั้ง 5 ข้อแล้ว
+              🎉 ยินดีด้วย! คุณผ่านแบบทดสอบปฏิบัติครบทั้ง 5 ข้อแล้ว
             </h3>
             <p style="color:#64748B; font-size:0.95rem; margin-bottom:1.5rem;">
-              ความก้าวหน้า 5/5 ข้อ • ปลดล็อกขั้นตอนถัดไปเรียบร้อยแล้ว เลือกดำเนินการต่อที่ต้องการ:
+              ความก้าวหน้า 5/5 ข้อ • ระบบปลดล็อก <strong>3. แบบทดสอบท้ายบทเรียน (15 ข้อ)</strong> ด้านล่างเรียบร้อยแล้ว
             </p>
             <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-              <button class="btn btn-primary" onclick="continueToNextLesson('${type}')" style="font-size:1rem; padding:0.75rem 1.6rem;">
-                ${nextBtnText} <i class='bx ${nextIcon}'></i>
+              <button class="btn btn-primary" onclick="scrollToQuizSection()" style="font-size:1rem; padding:0.75rem 1.6rem;">
+                ไปทำแบบทดสอบท้ายบทเรียน (15 ข้อ) <i class='bx bx-down-arrow-alt'></i>
               </button>
               <button class="btn btn-secondary" onclick="backDashboard()" style="font-size:1rem; padding:0.75rem 1.6rem;">
                 <i class='bx bx-home'></i> กลับสู่หน้าแดชบอร์ด
@@ -6804,16 +6822,16 @@ __buf.getvalue()`);
               sum.innerHTML = `<i class='bx bx-check-circle'></i> ความก้าวหน้า <strong>${passedCount}/5 ข้อ</strong> • คะแนนที่ได้ <strong>${currentScore}/10 คะแนน</strong>`;
             }
 
-            const isDoneNow = passedCount >= 5 || r.unlockedNext;
+            const isDoneNow = passedCount >= 5 || r.unlockedQuiz || r.unlockedNext;
 
             if (isDoneNow) {
-              // ทำครบ 5 ข้อแล้ว: แสดงการ์ดสรุปและกล่องข้อความปลดล็อก
+              // ผ่านปฏิบัติครบ 5 ข้อแล้ว: ปลดล็อกแบบทดสอบท้ายบทเรียน (15 ข้อ) ด้านล่างทันที
+              refreshLessonQuizGate(type);
+
               let compCard = document.getElementById("lessonCompletionCard");
               if (!compCard) {
                 const wrap = document.getElementById("challengeTasks");
                 if (wrap) {
-                  const nextBtnText = type === "while" ? "เข้าสู่ Cyber Code Arena" : "เข้าสู่บทเรียนถัดไป";
-                  const nextIcon = type === "while" ? "bx-trophy" : "bx-right-arrow-alt";
                   compCard = document.createElement("div");
                   compCard.className = "theory-card";
                   compCard.id = "lessonCompletionCard";
@@ -6823,14 +6841,14 @@ __buf.getvalue()`);
                       <i class='bx bx-check-circle'></i>
                     </div>
                     <h3 style="color:#0F172A; font-size:1.35rem; margin-bottom:0.4rem; font-weight:700;">
-                      🎉 ยินดีด้วย! คุณผ่านโจทย์เขียนโค้ดครบทั้ง 5 ข้อแล้ว
+                      🎉 ยินดีด้วย! คุณผ่านแบบทดสอบปฏิบัติครบทั้ง 5 ข้อแล้ว
                     </h3>
                     <p style="color:#64748B; font-size:0.95rem; margin-bottom:1.5rem;">
-                      ความก้าวหน้า 5/5 ข้อ • ปลดล็อกขั้นตอนถัดไปเรียบร้อยแล้ว เลือกดำเนินการต่อที่ต้องการ:
+                      ความก้าวหน้า 5/5 ข้อ • ระบบปลดล็อก <strong>3. แบบทดสอบท้ายบทเรียน (15 ข้อ)</strong> ด้านล่างเรียบร้อยแล้ว
                     </p>
                     <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-                      <button class="btn btn-primary" onclick="continueToNextLesson('${type}')" style="font-size:1rem; padding:0.75rem 1.6rem;">
-                        ${nextBtnText} <i class='bx ${nextIcon}'></i>
+                      <button class="btn btn-primary" onclick="scrollToQuizSection()" style="font-size:1rem; padding:0.75rem 1.6rem;">
+                        ไปทำแบบทดสอบท้ายบทเรียน (15 ข้อ) <i class='bx bx-down-arrow-alt'></i>
                       </button>
                       <button class="btn btn-secondary" onclick="backDashboard()" style="font-size:1rem; padding:0.75rem 1.6rem;">
                         <i class='bx bx-home'></i> กลับสู่หน้าแดชบอร์ด
@@ -6846,12 +6864,11 @@ __buf.getvalue()`);
                 }, 300);
               }
 
-              const nextLabel = type === "while" ? "เข้าสู่ Cyber Code Arena" : "เข้าสู่บทเรียนถัดไป";
               setTimeout(() => {
                 showActionNotice(
-                  `🎉 ยินดีด้วย! ผ่านโจทย์เขียนโค้ดครบทั้ง 5 ข้อแล้ว (${r.lessonScore || 10}/${r.lessonTotal || 10} คะแนน)`,
-                  nextLabel,
-                  () => continueToNextLesson(type),
+                  `🎉 ผ่านปฏิบัติครบทั้ง 5 ข้อแล้ว (${r.lessonScore || 10}/${r.lessonTotal || 10} คะแนน) ปลดล็อกแบบทดสอบท้ายบทเรียน (15 ข้อ) แล้ว!`,
+                  "ไปทำแบบทดสอบท้ายบทเรียน",
+                  () => scrollToQuizSection(),
                   "กลับสู่หน้าแดชบอร์ด",
                   () => backDashboard()
                 );
@@ -7744,14 +7761,30 @@ __buf.getvalue()`);
       document.getElementById("ideTerminalOutput").innerHTML = ">>> Terminal cleared.";
     }
 
-    /* LESSON QUIZ CONTROLLER (แบบทดสอบท้ายบท เกณฑ์ผ่าน 60% ปลดล็อกปฏิบัติ) */
+    function refreshLessonQuizGate(type) {
+      const endpoint = type === "ifelse" ? "getIfElseLesson" : type === "while" ? "getWhileLesson" : type === "for" ? "getForLesson" : "";
+      if (!endpoint) return;
+      runServer(endpoint, [sessionToken], r => {
+        if (r && r.success) {
+          lessonQuestions = r.questions || [];
+          renderLessonQuiz(type, r);
+        }
+      });
+    }
+
+    function scrollToQuizSection() {
+      const g = document.getElementById("lessonQuizGate");
+      if (g) g.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    /* LESSON QUIZ CONTROLLER (แบบทดสอบท้ายบท ปลดล็อกเมื่อผ่านปฏิบัติครบทั้ง 5 ข้อ) */
     function renderLessonQuiz(type, lessonData) {
       const gate = document.getElementById("lessonQuizGate");
       if (!gate) return;
       gate.style.display = "block";
 
       const lesson = LESSONS[type] || {};
-      const totalQ = lessonQuestions.length || 15;
+      const totalQ = Number(lessonData?.totalQuestions) || lessonQuestions.length || 15;
       const minPass = lessonData?.minPassQuestions || Math.ceil(totalQ * 0.6);
 
       const titleEl = document.getElementById("lessonQuizHeaderTitle");
@@ -7760,7 +7793,46 @@ __buf.getvalue()`);
       const criteriaEl = document.getElementById("lessonQuizPassingCriteria");
       if (criteriaEl) criteriaEl.textContent = `เกณฑ์การผ่าน 60% ขึ้นไป (${minPass} จาก ${totalQ} คะแนน)`;
 
+      const lockBox = document.getElementById("lessonQuizLockBox");
       const statusAlert = document.getElementById("lessonQuizStatusAlert");
+      const qWrap = document.getElementById("lessonQuestions");
+      const submitBtn = document.getElementById("submitLessonButton");
+      const resultDiv = document.getElementById("lessonResult");
+
+      const isUnlocked = currentUserRole === "admin" || Boolean(lessonData?.practicalPassed);
+      if (!isUnlocked) {
+        const doneCount = Number(lessonData?.practicalCompletedCount) || 0;
+        const practTotal = Number(lessonData?.practicalTotal) || 5;
+        if (lockBox) {
+          lockBox.style.display = "block";
+          lockBox.innerHTML = `
+            <div class="theory-card" style="border: 2px dashed #F59E0B; background: #FFFBEB; border-radius: 12px; padding: 2rem 1.5rem; text-align: center;">
+              <div style="font-size: 2.6rem; color: #F59E0B; margin-bottom: 0.45rem;"><i class='bx bx-lock-alt'></i></div>
+              <h3 style="color: #B45309; font-weight: 700; font-size: 1.25rem; margin-bottom: 0.45rem;">
+                🔒 แบบทดสอบท้ายบทเรียนยังไม่ปลดล็อก
+              </h3>
+              <p style="color: #92400E; font-size: 0.96rem; line-height: 1.6; max-width: 640px; margin: 0 auto 1.25rem;">
+                ต้องทำ <strong>2. แบบทดสอบปฏิบัติครบทั้ง ${practTotal} ข้อ</strong> ด้านบนให้ผ่านทั้งหมดก่อน<br>
+                (ความก้าวหน้าปัจจุบัน: <strong>${doneCount}/${practTotal} ข้อ</strong>) จึงจะเปิดแบบทดสอบท้ายบทเรียน (${totalQ} ข้อ) ได้
+              </p>
+              <button class="btn btn-primary" onclick="scrollToPracticalSection()" style="font-size: 0.95rem; padding: 0.65rem 1.5rem;">
+                <i class='bx bx-up-arrow-alt'></i> เลื่อนขึ้นไปทำแบบทดสอบปฏิบัติ (${practTotal} ข้อ)
+              </button>
+            </div>
+          `;
+        }
+        if (statusAlert) statusAlert.style.display = "none";
+        if (qWrap) qWrap.innerHTML = "";
+        if (submitBtn) submitBtn.style.display = "none";
+        if (resultDiv) resultDiv.style.display = "none";
+        return;
+      }
+
+      if (lockBox) {
+        lockBox.style.display = "none";
+        lockBox.innerHTML = "";
+      }
+
       if (statusAlert) {
         if (lessonData?.quizPassed) {
           statusAlert.style.display = "block";
@@ -7772,9 +7844,9 @@ __buf.getvalue()`);
         } else {
           statusAlert.style.display = "block";
           statusAlert.innerHTML = `
-            <div class="toast-msg" style="background:#FFFBEB; color:#B45309; border:1px solid rgba(245,158,11,0.3); display:flex; align-items:center; gap:0.5rem;">
-              <i class='bx bx-info-circle' style="font-size:1.3rem;"></i>
-              <span><strong>คำชี้แจง:</strong> ตอบคำถามท้ายบทเรียนให้ครบทั้ง ${totalQ} ข้อ (เกณฑ์ผ่าน <strong>${minPass} จาก ${totalQ} คะแนน</strong> หรือ 60%)</span>
+            <div class="toast-msg" style="background:#ECFDF5; color:#047857; border:1px solid rgba(16,185,129,0.35); display:flex; align-items:center; gap:0.5rem;">
+              <i class='bx bx-lock-open-alt' style="font-size:1.3rem;"></i>
+              <span><strong>ปลดล็อกแล้ว:</strong> ผ่านแบบทดสอบปฏิบัติครบทั้ง 5 ข้อเรียบร้อย! ตอบคำถามท้ายบทเรียนให้ครบทั้ง ${totalQ} ข้อ (เกณฑ์ผ่าน <strong>${minPass} จาก ${totalQ} คะแนน</strong> หรือ 60%)</span>
             </div>`;
         }
       }
@@ -7782,14 +7854,12 @@ __buf.getvalue()`);
       // เรนเดอร์คำถามแบบทดสอบ
       renderQuestions(lessonQuestions, "lessonQuestions", "lesson_");
 
-      const submitBtn = document.getElementById("submitLessonButton");
       if (submitBtn) {
         submitBtn.style.display = "inline-flex";
         submitBtn.disabled = false;
         submitBtn.innerHTML = "<span>ส่งคำตอบแบบทดสอบท้ายบท (ตรวจคะแนน)</span> <i class='bx bx-check-circle'></i>";
       }
 
-      const resultDiv = document.getElementById("lessonResult");
       if (resultDiv) resultDiv.style.display = "none";
     }
 
@@ -7846,8 +7916,15 @@ __buf.getvalue()`);
         }
 
         const retryBtn = document.getElementById("retryQuizBtn");
+        const gotoNextBtn = document.getElementById("gotoNextLessonBtn");
         const gotoPracticalBtn = document.getElementById("gotoPracticalBtn");
         if (retryBtn) retryBtn.style.display = r.passed ? "none" : "inline-flex";
+        if (gotoNextBtn) {
+          gotoNextBtn.style.display = r.passed ? "inline-flex" : "none";
+          gotoNextBtn.innerHTML = currentLesson === "while"
+            ? "เข้าสู่ Cyber Code Arena <i class='bx bx-trophy'></i>"
+            : "เข้าสู่บทเรียนถัดไป <i class='bx bx-right-arrow-alt'></i>";
+        }
         if (gotoPracticalBtn) gotoPracticalBtn.style.display = "inline-flex";
 
         const resultSheet = document.getElementById("lessonResult");

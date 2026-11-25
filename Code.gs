@@ -958,13 +958,29 @@ function getLesson(token, lessonKey) {
   const config = LESSON_CONFIG[lessonKey];
   if (!config) return { success: false, message: "ไม่พบบทเรียน: " + lessonKey };
 
+  const challengeKey = String(lessonKey || "").toLowerCase();
+  const chSheet = getDatabase().getSheetByName("CodingChallenges");
+  let practicalCompletedCount = 0;
+  if (chSheet && chSheet.getLastRow() >= 2) {
+    const chRows = chSheet.getDataRange().getValues().slice(1).filter(r =>
+      String(r[0]) === String(profile.studentId) &&
+      String(r[1]).toLowerCase() === challengeKey &&
+      (r[3] === true || String(r[3]) === "TRUE")
+    );
+    practicalCompletedCount = new Set(chRows.map(r => Number(r[2]))).size;
+  }
+  const practicalTotal = (CODING_TASKS[challengeKey] || []).length || 5;
+  const practicalPassed = profile.role === "admin" || practicalCompletedCount >= practicalTotal;
   const quizPassed = profile.role === "admin" || hasPassedLessonQuiz_(profile.studentId, lessonKey);
 
   return {
     success: true,
     lessonKey: lessonKey,
+    practicalPassed: practicalPassed,
+    practicalCompletedCount: practicalCompletedCount,
+    practicalTotal: practicalTotal,
     quizPassed: quizPassed,
-    questions: config.questions.map((item, index) => ({ id: index, question: item.question, choices: item.choices })),
+    questions: practicalPassed ? config.questions.map((item, index) => ({ id: index, question: item.question, choices: item.choices })) : [],
     totalQuestions: config.questions.length,
     maxScore: config.questions.length,
     minPassQuestions: Math.ceil(config.questions.length * 0.6),
@@ -984,6 +1000,11 @@ function submitLesson(token, lessonKey, answers) {
   if (progressRowForCheck < 2) return { success: false, message: "ไม่พบข้อมูลความก้าวหน้า" };
   const accessStatus = String(progressSheetForCheck.getRange(progressRowForCheck, config.statusColumn).getValue() || "").toUpperCase();
   if (profile.role !== "admin" && config.statusColumn !== 3 && !["UNLOCKED", "COMPLETED"].includes(accessStatus)) return { success: false, message: "ยังไม่ได้ปลดล็อกบทเรียนนี้" };
+
+  const challengeKey = String(lessonKey || "").toLowerCase();
+  if (profile.role !== "admin" && !hasPassedAllChallenges_(profile.studentId, challengeKey)) {
+    return { success: false, message: "ต้องผ่านแบบทดสอบปฏิบัติครบทั้ง 5 ข้อก่อนจึงจะทำแบบทดสอบท้ายบทเรียนได้" };
+  }
 
   const questions = config.questions;
   if (!Array.isArray(answers) || answers.length !== questions.length || answers.some(a => !Number.isInteger(a) || a < 0 || a > 3)) {
@@ -1010,9 +1031,19 @@ function submitLesson(token, lessonKey, answers) {
     const rowNumber = findStudentProgressRow(progressSheet, profile.studentId);
     quizSheet.appendRow([Utilities.getUuid(), profile.studentId, config.title + " Quiz (เต็ม 15)", score, new Date()]);
 
-    // เมื่อสอบผ่านเกณฑ์ 60% ขึ้นไป -> อัปเดต QuizColumn ให้เป็น COMPLETED เพื่อปลดล็อกโจทย์ปฏิบัติ 5 ข้อ
-    if (passed && rowNumber > 1 && config.quizColumn && profile.role !== "admin") {
-      progressSheet.getRange(rowNumber, config.quizColumn).setValue("COMPLETED");
+    // เมื่อผ่านทั้งปฏิบัติครบ 5 ข้อ และสอบท้ายบทผ่านเกณฑ์ 60% -> ปิดบทเรียน COMPLETED และปลดล็อกบทถัดไป/Arena
+    if (passed && rowNumber > 1 && profile.role !== "admin") {
+      if (config.quizColumn) progressSheet.getRange(rowNumber, config.quizColumn).setValue("COMPLETED");
+      if (config.statusColumn) progressSheet.getRange(rowNumber, config.statusColumn).setValue("COMPLETED");
+      if (config.nextColumn) {
+        if (config.nextColumn === 6) {
+          progressSheet.getRange(rowNumber, 6).setValue("UNLOCKED");
+          progressSheet.getRange(rowNumber, 10).setValue("UNLOCKED");
+        } else {
+          const curNext = String(progressSheet.getRange(rowNumber, config.nextColumn).getValue() || "").toUpperCase();
+          if (curNext !== "COMPLETED") progressSheet.getRange(rowNumber, config.nextColumn).setValue("UNLOCKED");
+        }
+      }
     }
     SpreadsheetApp.flush();
 
@@ -1025,10 +1056,10 @@ function submitLesson(token, lessonKey, answers) {
       total: total,
       minPassQuestions: minPassQuestions,
       passed: passed,
-      unlockedPractical: passed,
+      unlockedNext: passed,
       message: passed
-        ? "🎉 ยินดีด้วย! คุณผ่านแบบทดสอบท้ายบทแล้ว (" + score + "/" + total + " คะแนน หรือ " + percent + "%) ปลดล็อกโจทย์เขียนโค้ดปฏิบัติ 5 ข้อเรียบร้อยแล้ว!"
-        : "⚠️ ยังไม่ผ่านเกณฑ์ 60% (ได้ " + score + "/" + total + " คะแนน หรือ " + percent + "%) ต้องการอย่างน้อย " + minPassQuestions + "/" + total + " คะแนน กรุณาทบทวนบทเรียนและทำแบบทดสอบอีกครั้งเพื่อปลดล็อกภาคปฏิบัติ"
+        ? "🎉 ยินดีด้วย! คุณผ่านแบบทดสอบท้ายบทเรียนแล้ว (" + score + "/" + total + " คะแนน หรือ " + percent + "%) ปลดล็อกขั้นตอนถัดไปเรียบร้อยแล้ว!"
+        : "⚠️ ยังไม่ผ่านเกณฑ์ 60% (ได้ " + score + "/" + total + " คะแนน หรือ " + percent + "%) ต้องการอย่างน้อย " + minPassQuestions + "/" + total + " คะแนน กรุณาทบทวนเนื้อหาด้านบนและทำแบบทดสอบอีกครั้ง"
     };
   } finally {
     lock.releaseLock();
@@ -1550,21 +1581,6 @@ function submitCodingChallenge(token, lessonKey, challengeNo, code, output) {
   const lessonScore = Array.from(passedScores.values()).reduce((sum, taskScore) => sum + taskScore, 0);
   const lessonTotal = tasks.reduce((sum, task) => sum + Number(task.points || 0), 0);
 
-  if (passedCount === tasks.length && profile.role !== "admin") {
-    const ps = getDatabase().getSheetByName(PROGRESS_SHEET), row = findStudentProgressRow(ps, profile.studentId);
-    const col = ({ifelse:3, for:5, while:4})[lessonKey];
-    const next = ({ifelse:5, for:4, while:6})[lessonKey];
-    if (row > 1) {
-      ps.getRange(row, col).setValue("COMPLETED");
-      if (lessonKey !== "while") {
-        ps.getRange(row, next).setValue("UNLOCKED");
-      } else {
-        ps.getRange(row, 6).setValue("UNLOCKED");
-        ps.getRange(row, 10).setValue("UNLOCKED");
-      }
-    }
-  }
-
   return {
     success: true,
     passed: finalPassed,
@@ -1573,8 +1589,9 @@ function submitCodingChallenge(token, lessonKey, challengeNo, code, output) {
     passedCount,
     lessonScore,
     lessonTotal,
+    unlockedQuiz: passedCount === tasks.length,
     unlockedNext: passedCount === tasks.length,
-    message: finalPassed ? (passedCount === tasks.length ? "ผ่านครบทั้ง 5 ข้อแล้ว! ปลดล็อกขั้นตอนถัดไปเรียบร้อย" : "รันผ่านแล้ว! ไปทำข้อถัดไปได้เลย") : "ผลลัพธ์ยังไม่ตรงกับโจทย์ ลองตรวจโค้ดหรือป้อนค่าตามที่โจทย์แนะนำแล้วรันอีกครั้ง"
+    message: finalPassed ? (passedCount === tasks.length ? "ผ่านครบทั้ง 5 ข้อแล้ว! ปลดล็อกแบบทดสอบท้ายบทเรียน (15 ข้อ) เรียบร้อย" : "รันผ่านแล้ว! ไปทำข้อถัดไปได้เลย") : "ผลลัพธ์ยังไม่ตรงกับโจทย์ ลองวิเคราะห์เงื่อนไขและตรวจโค้ดแล้วรันอีกครั้ง"
   };
 }
 
