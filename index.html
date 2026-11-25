@@ -2613,6 +2613,7 @@
                   </div>
                   <h4>แบบทดสอบก่อนเรียน</h4>
                   <p>ประเมินความรู้พื้นฐานคำสั่งเงื่อนไขและการวนซ้ำ 20 ข้อ (คะแนนเต็ม 20 คะแนน)</p>
+                  <p id="pretestSavedScoreDisplay" style="margin-top:0.35rem; margin-bottom:0.75rem; font-size:0.86rem; font-weight:600; color:var(--accent-blue); display:none;"></p>
                   <button class="btn btn-primary" id="startPretestButton" onclick="startPretest()">
                     เริ่มทำแบบทดสอบ <i class='bx bx-right-arrow-alt'></i>
                   </button>
@@ -2739,15 +2740,14 @@
               </div>
             </div>
 
-            <div class="lesson-content-container">
-              <div class="theory-pane" id="lessonContent"></div>
-            </div>
+            <!-- ส่วนที่ 1 (ด้านบน): โจทย์เขียนโค้ดปฏิบัติ 5 ข้อ (วิเคราะห์และเขียนโค้ดโดยไม่มีคำใบ้) -->
+            <div id="codingChallengeContainer" style="margin-top: 0;"></div>
 
-            <!-- ส่วนที่ 2: แบบทดสอบท้ายบทเรียน (เกณฑ์ผ่าน 60% ขึ้นไป เพื่อปลดล็อกโจทย์ปฏิบัติ) -->
+            <!-- ส่วนที่ 2: แบบทดสอบประจำบทเรียน (15 ข้อ เต็ม 15 คะแนน) -->
             <div class="arena-container" id="lessonQuizGate" style="margin-top: 3rem; display:none;">
               <div class="module-head">
-                <h3 id="lessonQuizHeaderTitle">✍️ แบบทดสอบท้ายบทเรียน (Knowledge Check)</h3>
-                <span id="lessonQuizPassingCriteria">เกณฑ์การผ่าน 60% ขึ้นไป เพื่อปลดล็อกโจทย์เขียนโค้ดปฏิบัติ</span>
+                <h3 id="lessonQuizHeaderTitle">✍️ แบบทดสอบประจำบทเรียน (Knowledge Check)</h3>
+                <span id="lessonQuizPassingCriteria">เกณฑ์การผ่าน 60% ขึ้นไป (9 จาก 15 คะแนน)</span>
               </div>
 
               <div id="lessonQuizStatusAlert" style="display:none; margin-top: 1rem;"></div>
@@ -2755,11 +2755,11 @@
               <div id="lessonQuestions"></div>
 
               <button class="btn btn-primary" id="submitLessonButton" onclick="submitLessonQuiz()" style="width: 100%; margin-top: 1.5rem; font-size:1.02rem; padding:0.85rem 1.5rem; justify-content:center;">
-                <span>ส่งคำตอบแบบทดสอบท้ายบท (ตรวจคะแนน)</span> <i class='bx bx-check-circle'></i>
+                <span>ส่งคำตอบแบบทดสอบ (ตรวจคะแนน)</span> <i class='bx bx-check-circle'></i>
               </button>
 
               <div id="lessonResult" class="result-sheet" style="display: none; margin-top: 1.75rem;">
-                <h3>สรุปผลการประเมินแบบทดสอบท้ายบท</h3>
+                <h3>สรุปผลการประเมินแบบทดสอบประจำบท</h3>
                 <div id="lessonScore" class="score-circle">-- / 15</div>
                 <p id="lessonDetail" style="font-size: 1.1rem; margin-bottom: 1.25rem;"></p>
                 <div id="lessonMessage"></div>
@@ -2768,7 +2768,10 @@
                     <i class='bx bx-refresh'></i> ทำแบบทดสอบอีกครั้ง
                   </button>
                   <button class="btn btn-primary" id="gotoPracticalBtn" onclick="scrollToPracticalSection()" style="display:none;">
-                    ไปทำโจทย์ปฏิบัติ 5 ข้อ <i class='bx bx-code-block'></i>
+                    กลับไปดูโจทย์ปฏิบัติด้านบน <i class='bx bx-code-block'></i>
+                  </button>
+                  <button class="btn btn-secondary" onclick="scrollToTheorySection()">
+                    <i class='bx bx-book-open'></i> ทบทวนเนื้อหาด้านล่าง
                   </button>
                   <button class="btn btn-ghost" onclick="backDashboard()">
                     กลับสู่หน้าแดชบอร์ด <i class='bx bx-home'></i>
@@ -2777,8 +2780,14 @@
               </div>
             </div>
 
-            <!-- ส่วนที่ 3: โจทย์เขียนโค้ดปฏิบัติ (Coding Challenges 5 ข้อ) จะปลดล็อกเมื่อสอบผ่าน 60% -->
-            <div id="codingChallengeContainer" style="margin-top: 3rem;"></div>
+            <!-- ส่วนที่ 3 (หลังสุด): เนื้อหาบทเรียนและทฤษฎีประกอบ -->
+            <div id="lessonTheorySection" class="lesson-content-container" style="margin-top: 3rem;">
+              <div class="arena-container" style="margin-bottom: 1.25rem; padding: 1.15rem 1.5rem;">
+                <h3 style="margin:0;"><i class='bx bx-book-open'></i> เนื้อหาบทเรียนและตัวอย่างประกอบ</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.3rem;">สรุปหลักการทำงานและตัวอย่างโค้ดสำหรับศึกษาทบทวนเพิ่มเติม</p>
+              </div>
+              <div class="theory-pane" id="lessonContent"></div>
+            </div>
           </div>
 
           <!-- VIEW 5: CYBER LOGIC CODING ARENA -->
@@ -4455,6 +4464,8 @@
     /* BACKEND CONNECTOR */
     let mockProgress = {
       pretestStatus: "NOT_STARTED",
+      pretestScore: null,
+      pretestMaxScore: 20,
       ifElseStatus: "UNLOCKED",
       whileStatus: "LOCKED",
       forLoopStatus: "LOCKED",
@@ -4514,10 +4525,17 @@
               message: "เข้าสู่ระบบผู้ดูแลสำเร็จ"
             });
           } else if (fn === 'getDashboardData') {
+            const savedSid = safeStorageGet("pca_id") || "6601001";
+            const cachedPre = safeStorageGet("pca_pretest_score_" + savedSid);
+            const preScore = mockProgress.pretestScore !== null && mockProgress.pretestScore !== undefined
+              ? mockProgress.pretestScore
+              : (cachedPre !== null && cachedPre !== undefined && cachedPre !== "" ? Number(cachedPre) : null);
             ok({
               success: true,
-              student: { studentName: (args && args[0]) ? "นักเรียน" : "นักเรียนทดสอบ", studentId: "6601001" },
-              progress: Object.assign({}, mockProgress)
+              student: { studentName: safeStorageGet("pca_name") || ((args && args[0]) ? "นักเรียน" : "นักเรียนทดสอบ"), studentId: savedSid },
+              pretestScore: preScore,
+              pretestMaxScore: mockProgress.pretestMaxScore || 20,
+              progress: Object.assign({}, mockProgress, { pretestScore: preScore, pretestMaxScore: mockProgress.pretestMaxScore || 20 })
             });
           } else if (fn === 'getPretestQuestions') {
             ok({
@@ -4554,6 +4572,10 @@
             const given = Array.isArray(args && args[1]) ? args[1] : [];
             const correct = given.length === 20 ? given.reduce((n, a, i) => n + (Number(a) === preAns[i] ? 1 : 0), 0) : 16;
             const percent = Math.round((correct / 20) * 100);
+            mockProgress.pretestScore = correct;
+            mockProgress.pretestMaxScore = 20;
+            const sid = safeStorageGet("pca_id") || "6601001";
+            safeStorageSet("pca_pretest_score_" + sid, String(correct));
             ok({ success: true, score: correct, maxScore: 20, percent: percent, correct: correct, total: 20, message: "บันทึกคะแนน Pre-test เรียบร้อยแล้ว (" + correct + "/20 คะแนน)" });
           } else if (fn === 'getWhileLesson') {
             const qs = [
@@ -5059,15 +5081,32 @@
             if (!window._mockPassedTasks) window._mockPassedTasks = {};
             if (!window._mockPassedTasks[lKey]) window._mockPassedTasks[lKey] = new Set();
             const pSet = window._mockPassedTasks[lKey];
-            const mockTasks = [
-              { index: 1, title: "ตรวจสอบสิทธิ์เลือกตั้ง", prompt: "จงเขียนโปรแกรมรับค่าอายุ (จำนวนเต็ม) จากผู้ใช้ 1 ค่า\n• หากอายุตั้งแต่ 18 ปีขึ้นไป ให้แสดงข้อความ: มีสิทธิ์เลือกตั้ง\n• หากอายุน้อยกว่า 18 ปี ให้แสดงข้อความ: ยังไม่มีสิทธิ์เลือกตั้ง\n(ข้อมูลทดสอบ: ป้อน 20)", points: 2, completed: pSet.has(1), score: pSet.has(1) ? 2 : 0 },
-              { index: 2, title: "ตรวจสอบจำนวนบวก ลบ หรือศูนย์", prompt: "จงเขียนโปรแกรมรับค่าตัวเลขจำนวนเต็ม 1 ค่า แล้วจำแนกประเภทของตัวเลขดังนี้:\n• มากกว่า 0 ให้แสดง: จำนวนบวก\n• น้อยกว่า 0 ให้แสดง: จำนวนลบ\n• เท่ากับ 0 ให้แสดง: ศูนย์\n(ข้อมูลทดสอบ: ป้อน 15)", points: 2, completed: pSet.has(2), score: pSet.has(2) ? 2 : 0 },
-              { index: 3, title: "ระบบตัดเกรดวัดผล", prompt: "จงเขียนโปรแกรมรับคะแนนสอบ (รองรับทศนิยม) จากผู้ใช้ แล้วประเมินเกรดตามเกณฑ์ A, B, C, D, F\n(ข้อมูลทดสอบ: ป้อน 85)", points: 2, completed: pSet.has(3), score: pSet.has(3) ? 2 : 0 },
-              { index: 4, title: "ตรวจสอบเงื่อนไขซื้อสินค้า", prompt: "จงเขียนโปรแกรมรับข้อมูล 2 ค่า คือ อายุ และ จำนวนเงินที่มี (จำนวนเต็ม)\nเงื่อนไข: อายุตั้งแต่ 18 ปีขึ้นไป และมีเงินตั้งแต่ 100 บาทขึ้นไปพร้อมกัน\n(ข้อมูลทดสอบ: ป้อน 20 และ 150)", points: 2, completed: pSet.has(4), score: pSet.has(4) ? 2 : 0 },
-              { index: 5, title: "ระบบตรวจสอบรหัสผ่าน", prompt: 'จงเขียนโปรแกรมรับรหัสผ่านจากผู้ใช้ หากรหัสผ่านตรงกับ "1234" ให้แสดง: เข้าสู่ระบบสำเร็จ\n(ข้อมูลทดสอบ: ป้อน 1234)', points: 2, completed: pSet.has(5), score: pSet.has(5) ? 2 : 0 }
-            ];
+            const taskBank = {
+              ifelse: [
+                { index: 1, title: "ตรวจสอบสิทธิ์เลือกตั้ง", prompt: "กฎหมายกำหนดให้ผู้มีสิทธิ์เลือกตั้งต้องมีอายุตั้งแต่ 18 ปีขึ้นไป หากอายุต่ำกว่า 18 ปีจะยังไม่มีสิทธิ์ จงวิเคราะห์เงื่อนไขและเขียนโปรแกรมรับค่าอายุจากผู้ใช้เพื่อแสดงผลลัพธ์ว่าเป็น 'มีสิทธิ์เลือกตั้ง' หรือ 'ยังไม่มีสิทธิ์เลือกตั้ง'", points: 2 },
+                { index: 2, title: "ตรวจสอบจำนวนบวก ลบ หรือศูนย์", prompt: "จงวิเคราะห์และเขียนโปรแกรมรับตัวเลขจำนวนเต็ม 1 ค่าจากผู้ใช้ เพื่อจำแนกและแสดงผลลัพธ์ว่าเป็น 'จำนวนบวก', 'จำนวนลบ' หรือ 'ศูนย์'", points: 2 },
+                { index: 3, title: "ระบบตัดเกรดวัดผล", prompt: "เกณฑ์การประเมินคะแนนสอบ (รองรับทศนิยม) มีดังนี้: 80 ขึ้นไปได้ เกรด A, 70–79.99 ได้ เกรด B, 60–69.99 ได้ เกรด C, 50–59.99 ได้ เกรด D และต่ำกว่า 50 ได้ เกรด F จงเขียนโปรแกรมรับคะแนนและวิเคราะห์เพื่อแสดงผลลัพธ์เป็น เกรด A, เกรด B, เกรด C, เกรด D หรือ เกรด F", points: 2 },
+                { index: 4, title: "ตรวจสอบเงื่อนไขซื้อสินค้า", prompt: "ร้านค้ากำหนดว่าผู้ซื้อต้องมีอายุตั้งแต่ 18 ปีขึ้นไป และต้องมีเงินตั้งแต่ 100 บาทขึ้นไปพร้อมกันจึงจะซื้อสินค้าได้ จงเขียนโปรแกรมรับค่าอายุและจำนวนเงิน (ตามลำดับ) แล้ววิเคราะห์แสดงผลลัพธ์ว่า 'สามารถซื้อสินค้าได้' หรือ 'ไม่สามารถซื้อสินค้าได้'", points: 2 },
+                { index: 5, title: "ระบบตรวจสอบรหัสผ่าน", prompt: 'ระบบกำหนดรหัสผ่านที่ถูกต้องไว้คือ "1234" จงเขียนโปรแกรมรับรหัสผ่านจากผู้ใช้ แล้วตรวจสอบเพื่อแสดงผลลัพธ์ว่า \'เข้าสู่ระบบสำเร็จ\' หรือ \'รหัสผ่านไม่ถูกต้อง\'', points: 2 }
+              ],
+              for: [
+                { index: 1, title: "แสดงตัวเลข 1 ถึง N", prompt: "จงวิเคราะห์และเขียนโปรแกรมรับค่าจำนวนเต็มบวก N (อย่างน้อย 2) จากผู้ใช้ แล้วแสดงลำดับตัวเลขตั้งแต่ 1 ถึง N ออกมาทีละบรรทัด", points: 2 },
+                { index: 2, title: "แสดงเฉพาะเลขคู่ 2 ถึง 10", prompt: "จงเขียนโปรแกรมวิเคราะห์และแสดงเฉพาะตัวเลขคู่ที่มีค่าตั้งแต่ 2 ถึง 10 ออกมาทางหน้าจอทีละบรรทัด", points: 2 },
+                { index: 3, title: "คำนวณผลรวมสะสม 1 ถึง 5", prompt: "หากต้องการทราบผลรวมของตัวเลขจำนวนเต็มตั้งแต่ 1 ถึง 5 จงเขียนโปรแกรมคำนวณและแสดงผลลัพธ์ในรูปแบบ 'ผลรวม = <ค่าที่ได้>'", points: 2 },
+                { index: 4, title: "โปรแกรมสูตรคูณแม่ N", prompt: "จงเขียนโปรแกรมรับค่าแม่สูตรคูณ N (จำนวนเต็มบวก) แล้วคำนวณแสดงตารางสูตรคูณตั้งแต่คูณ 1 ถึงคูณ 5 ในรูปแบบ 'N x i = ผลลัพธ์' ทีละบรรทัด", points: 2 },
+                { index: 5, title: "คำนวณผลรวมคะแนนในลิสต์", prompt: "กำหนดชุดข้อมูลคะแนน 4 ค่า ได้แก่ 10, 20, 30 และ 40 จงเขียนโปรแกรมคำนวณหาผลรวมของคะแนนทั้งหมด แล้วแสดงผลในรูปแบบ 'คะแนนรวม = <ผลลัพธ์>'", points: 2 }
+              ],
+              while: [
+                { index: 1, title: "นับถอยหลังปล่อยยานอวกาศ", prompt: "จงวิเคราะห์และเขียนโปรแกรมให้นับถอยหลังตั้งแต่ 3, 2, 1 ทีละบรรทัด และเมื่อนับจบให้แสดงข้อความ 'เริ่มการทำงาน!' ในบรรทัดสุดท้าย", points: 2 },
+                { index: 2, title: "รับตัวเลขจนกว่าจะป้อนเลข 0", prompt: "จงเขียนโปรแกรมรับจำนวนเต็มจากผู้ใช้ซ้ำไปเรื่อย ๆ จนกว่าจะป้อนเลข 0: หากไม่ใช่ 0 ให้แสดงข้อความ 'คุณกรอกเลข <ค่าที่กรอก>' แล้วรับค่าถัดไป แต่เมื่อป้อน 0 ให้หยุดการทำงานและแสดงข้อความ 'หยุดการทำงานแล้ว'", points: 2 },
+                { index: 3, title: "คำนวณผลรวม 1 ถึง 5", prompt: "จงวิเคราะห์การทำงานแบบวนซ้ำตามเงื่อนไขเพื่อคำนวณหาผลรวมตั้งแต่ 1 ถึง 5 แล้วแสดงผลลัพธ์ในรูปแบบ 'ผลรวม = <ค่าที่ได้>'", points: 2 },
+                { index: 4, title: "แยกเลขคู่และเลขคี่ 1 ถึง 5", prompt: "จงเขียนโปรแกรมตรวจสอบตัวเลขตั้งแต่ 1 ถึง 5 ทีละตัวว่าเป็นเลขคู่หรือเลขคี่ แล้วแสดงผลทีละบรรทัดในรูปแบบ '<ตัวเลข> เป็นเลขคู่' หรือ '<ตัวเลข> เป็นเลขคี่'", points: 2 },
+                { index: 5, title: "ระบบรับรหัสผ่านจนกว่าจะถูกต้อง", prompt: 'ระบบตั้งรหัสผ่านที่ถูกต้องไว้คือ "1234" จงเขียนโปรแกรมให้ผู้ใช้กรอกรหัสผ่าน: หากกรอกผิดให้แสดงว่า \'รหัสผ่านไม่ถูกต้อง\' และให้กรอกใหม่จนกว่าจะถูกต้องจึงหยุดและแสดง \'เข้าสู่ระบบสำเร็จ\'', points: 2 }
+              ]
+            };
+            const mockTasks = (taskBank[lKey] || taskBank.ifelse).map(t => Object.assign({}, t, { completed: pSet.has(t.index), score: pSet.has(t.index) ? t.points : 0 }));
             const compCount = pSet.size;
-            ok({ success: true, tasks: mockTasks, completedCount: compCount, totalScore: compCount * 2, totalPoints: 10 });
+            ok({ success: true, tasks: mockTasks, completedCount: compCount, totalScore: compCount * 2, totalPoints: 10, quizPassed: true });
           } else if (fn === 'submitCodingChallenge' || fn === 'submitChallengeTask') {
             const lKey = (args && args[1]) || 'ifelse';
             const taskNo = Number(args && args[2]) || 1;
@@ -5688,6 +5727,21 @@
       const whileUnlocked = forDone || String(p.whileStatus || "").toUpperCase() === "UNLOCKED" || whileDone;
       const activityUnlocked = (pretestDone && ifElseDone && forDone && whileDone) || String(p.activityStatus || "").toUpperCase() === "UNLOCKED" || activityDone;
 
+      const pretestScoreBox = document.getElementById("pretestSavedScoreDisplay");
+      if (pretestScoreBox) {
+        const storedPre = safeStorageGet("pca_pretest_score_" + (safeStorageGet("pca_id") || ""));
+        const resolvedScore = (p.pretestScore !== null && p.pretestScore !== undefined)
+          ? Number(p.pretestScore)
+          : (storedPre !== null && storedPre !== undefined && storedPre !== "" ? Number(storedPre) : null);
+        const resolvedMax = Number(p.pretestMaxScore) || 20;
+        if (resolvedScore !== null && !Number.isNaN(resolvedScore)) {
+          pretestScoreBox.textContent = `📊 คะแนนก่อนเรียนที่บันทึกไว้: ${resolvedScore} / ${resolvedMax} คะแนน`;
+          pretestScoreBox.style.display = "block";
+        } else {
+          pretestScoreBox.style.display = "none";
+        }
+      }
+
       const configs = [
         ["ifElseButton", "ifElseCard", "ifElseStatus", ifElseUnlocked, ifElseDone, "เริ่มเรียน If-Else", "เริ่มเรียน If-Else"],
         ["forButton", "forCard", "forLoopStatus", forUnlocked, forDone, "เริ่มเรียน For Loop", "ต้องผ่านบทที่ 1 ก่อน"],
@@ -6104,6 +6158,11 @@
 
         const totalQ = r.total || pretestQuestions.length || 20;
         const pct = r.percent !== undefined ? r.percent : Math.round((r.correct / totalQ) * 100);
+        mockProgress.pretestScore = r.score;
+        mockProgress.pretestMaxScore = totalQ;
+        const activeSid = safeStorageGet("pca_id") || document.getElementById("studentCode")?.textContent?.trim() || "6601001";
+        safeStorageSet("pca_pretest_score_" + activeSid, String(r.score));
+        safeStorageSet("pca_pretest_max_" + activeSid, String(totalQ));
         document.getElementById("pretestScore").textContent = `${r.score} / ${totalQ} คะแนน`;
         document.getElementById("pretestResultMessage").innerHTML = `ตอบถูกทั้งหมด <strong>${r.correct}</strong> จาก ${totalQ} ข้อ (${pct}%) — ${r.message}`;
         document.getElementById("pretestResult").style.display = "block";
@@ -6189,7 +6248,9 @@
         return;
       }
 
-      // แสดงเนื้อหาบทเรียน ทฤษฎี แผนภาพ ตัวอย่างโค้ด ทันที!
+      // 1. แสดงปฏิบัติ 5 ข้อด้านบนสุด (ปลดล็อกให้วิเคราะห์และลงมือทำทันที)
+      renderChallengeTasksOnly(type, true);
+      // 2. แสดงเนื้อหาบทเรียนไว้ด้านล่างสุดสำหรับศึกษาทบทวนเพิ่มเติม
       renderLessonContent(type);
       showArea("lessonArea");
 
@@ -6202,7 +6263,7 @@
       const qBox = document.getElementById("lessonQuestions");
       if (gate) gate.style.display = "block";
       if (qBox) {
-        qBox.innerHTML = `<div class="theory-card" style="text-align:center; padding:1.5rem;"><i class='bx bx-loader-alt bx-spin' style="font-size:1.75rem; color:var(--primary);"></i><p style="margin-top:0.5rem; color:var(--text-muted);">กำลังโหลดแบบทดสอบท้ายบทและโจทย์ปฏิบัติ...</p></div>`;
+        qBox.innerHTML = `<div class="theory-card" style="text-align:center; padding:1.5rem;"><i class='bx bx-loader-alt bx-spin' style="font-size:1.75rem; color:var(--primary);"></i><p style="margin-top:0.5rem; color:var(--text-muted);">กำลังโหลดแบบทดสอบประจำบท...</p></div>`;
       }
 
       const endpoint = type === "ifelse" ? "getIfElseLesson" : type === "while" ? "getWhileLesson" : type === "for" ? "getForLesson" : "";
@@ -6218,12 +6279,9 @@
           return;
         }
         try {
-          // ดึงและแสดงแบบทดสอบท้ายบท 15 ข้อ
+          // 2. แสดงแบบทดสอบประจำบท 15 ข้อ (เต็ม 15 คะแนน)
           lessonQuestions = r.questions || [];
           renderLessonQuiz(type, r);
-
-          // แสดงโจทย์ปฏิบัติ 5 ข้อ (ปลดล็อกหากผ่าน 60% หรือเป็น Admin)
-          renderChallengeTasksOnly(type, r.quizPassed);
         } catch (error) {
           console.error("Render lesson quiz/challenges failed:", type, error);
         }
@@ -6426,8 +6484,8 @@ __buf.getvalue()`);
 
         const input = document.createElement("input");
         input.type = "text";
-        input.value = defaultVal !== undefined ? defaultVal : "";
-        input.placeholder = defaultVal ? `ค่าแนะนำ: ${defaultVal}` : "พิมพ์ค่าแล้วกด Enter หรือคลิกส่งค่า";
+        input.value = "";
+        input.placeholder = "พิมพ์ค่าข้อมูลนำเข้าที่ต้องการทดสอบ แล้วกด Enter";
         input.style.cssText = "flex:1; background:#07101f; color:#f8fafc; border:1px solid #475569; border-radius:6px; padding:0.35rem 0.6rem; font-family:monospace; font-size:0.9rem; outline:none;";
 
         const btn = document.createElement("button");
@@ -6464,7 +6522,7 @@ __buf.getvalue()`);
       const owner=currentUserRole==="admin"?adminToken:(document.getElementById("studentCode").textContent.trim()||sessionToken);
       return `python-academy:challenge:${owner}:${type}:${index}`;
     }
-    function renderChallengeTasksOnly(type, isQuizPassed = false) {
+    function renderChallengeTasksOnly(type, isQuizPassed = true) {
       const container = document.getElementById("codingChallengeContainer") || document.getElementById("lessonContent");
       const old = document.getElementById("codingChallengePanel");
       if (old) old.remove();
@@ -6472,36 +6530,15 @@ __buf.getvalue()`);
       const panel = document.createElement("section");
       panel.className = "video-library";
       panel.id = "codingChallengePanel";
-      panel.style.marginTop = "2rem";
+      panel.style.marginTop = "0";
 
-      // กรณีที่ยังไม่ผ่านแบบทดสอบท้ายบท (ยังไม่ได้ 60% ขึ้นไป) -> ล็อคโจทย์ปฏิบัติ
-      if (!isQuizPassed && currentUserRole !== "admin") {
-        panel.innerHTML = `
-          <div class="theory-card" style="border: 2px dashed #F59E0B; background: #FFFBEB; border-radius: 12px; padding: 2rem 1.5rem; text-align: center;">
-            <div style="font-size: 2.8rem; color: #F59E0B; margin-bottom: 0.5rem;"><i class='bx bx-lock-alt'></i></div>
-            <h3 style="color: #B45309; font-weight: 700; font-size: 1.3rem; margin-bottom: 0.5rem;">
-              🔒 ภาคปฏิบัติยังไม่ปลดล็อก: โจทย์เขียนโค้ดท้ายบท (5 ข้อ)
-            </h3>
-            <p style="color: #92400E; font-size: 0.98rem; line-height: 1.6; max-width: 650px; margin: 0 auto 1.35rem;">
-              คุณต้องทำ <strong>แบบทดสอบท้ายบทเรียน</strong> ด้านบนให้ผ่านเกณฑ์คะแนนตั้งแต่ <strong>60% ขึ้นไป</strong> ก่อน<br>
-              ระบบจึงจะปลดล็อกโจทย์เขียนโค้ดปฏิบัติ 5 ข้อให้เริ่มฝึกเขียนและส่งตรวจในส่วนนี้
-            </p>
-            <button class="btn btn-primary" onclick="document.getElementById('lessonQuizGate')?.scrollIntoView({behavior:'smooth', block:'start'})" style="font-size: 0.95rem; padding: 0.65rem 1.5rem;">
-              <i class='bx bx-edit'></i> เลื่อนไปทำแบบทดสอบท้ายบท
-            </button>
-          </div>
-        `;
-        container.appendChild(panel);
-        return;
-      }
-
-      // กรณีที่ผ่านแบบทดสอบท้ายบทแล้ว -> ปลดล็อกโจทย์เขียนโค้ดปฏิบัติ 5 ข้อ
+      // แสดงกิจกรรมปฏิบัติ 5 ข้อด้านบนสุด (วิเคราะห์และเขียนโค้ดโดยไม่มีคำใบ้)
       panel.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.4rem;">
-          <h3 style="margin:0;"><i class='bx bx-code-block'></i> 🔓 โจทย์เขียนโค้ดปฏิบัติท้ายบท: 5 ข้อ</h3>
-          <span class="status-pill completed" style="font-size:0.8rem; font-weight:700;"><i class='bx bx-check-circle'></i> ปลดล็อกแล้ว (ผ่านแบบทดสอบท้ายบท)</span>
+          <h3 style="margin:0;"><i class='bx bx-code-block'></i> 💻 กิจกรรมปฏิบัติ: วิเคราะห์โจทย์และเขียนโค้ด Python (5 ข้อ)</h3>
+          <span class="status-pill unlocked" style="font-size:0.8rem; font-weight:700;"><i class='bx bx-brain'></i> วิเคราะห์ด้วยตนเอง (ไม่มีคำใบ้)</span>
         </div>
-        <p id="challengeScoreSummary" style="color:var(--text-muted)">เขียนโปรแกรมจากโจทย์และรันตรวจคำตอบ • กำลังโหลดคะแนนเต็ม...</p>
+        <p id="challengeScoreSummary" style="color:var(--text-muted)">อ่านสถานการณ์ วิเคราะห์ปัญหา และเขียนโปรแกรม Python เพื่อส่งตรวจ • กำลังโหลดคะแนนเต็ม...</p>
         <div id="challengeTasks">กำลังโหลดโจทย์...</div>
       `;
       container.appendChild(panel);
@@ -6691,8 +6728,7 @@ __buf.getvalue()`);
 
         for (let i = 0; i < matches.length; i++) {
           const promptText = matches[i][1] || `ข้อมูลนำเข้าลำดับที่ ${i + 1}:`;
-          const suggestedVal = (defaultInputs && defaultInputs[i] !== undefined) ? defaultInputs[i] : "";
-          const enteredVal = await askChallengeInput(inputContainer, promptText, suggestedVal);
+          const enteredVal = await askChallengeInput(inputContainer, promptText, "");
           userInputs.push(enteredVal);
         }
       }
@@ -7725,10 +7761,10 @@ __buf.getvalue()`);
       const minPass = lessonData?.minPassQuestions || Math.ceil(totalQ * 0.6);
 
       const titleEl = document.getElementById("lessonQuizHeaderTitle");
-      if (titleEl) titleEl.innerHTML = `✍️ แบบทดสอบท้ายบทเรียน: ${lesson.title || type} (${totalQ} ข้อ • คะแนนเต็ม ${totalQ} คะแนน)`;
+      if (titleEl) titleEl.innerHTML = `✍️ แบบทดสอบประจำบทเรียน: ${lesson.title || type} (${totalQ} ข้อ • คะแนนเต็ม ${totalQ} คะแนน)`;
 
       const criteriaEl = document.getElementById("lessonQuizPassingCriteria");
-      if (criteriaEl) criteriaEl.textContent = `เกณฑ์การผ่าน 60% ขึ้นไป (${minPass} จาก ${totalQ} คะแนน) เพื่อปลดล็อกโจทย์เขียนโค้ดปฏิบัติ`;
+      if (criteriaEl) criteriaEl.textContent = `เกณฑ์การผ่าน 60% ขึ้นไป (${minPass} จาก ${totalQ} คะแนน)`;
 
       const statusAlert = document.getElementById("lessonQuizStatusAlert");
       if (statusAlert) {
@@ -7737,14 +7773,14 @@ __buf.getvalue()`);
           statusAlert.innerHTML = `
             <div class="toast-msg" style="background:var(--status-success-bg); color:var(--status-success); border:1px solid rgba(16,185,129,0.3); display:flex; align-items:center; gap:0.5rem;">
               <i class='bx bx-check-circle' style="font-size:1.3rem;"></i>
-              <span><strong>ผ่านแบบทดสอบท้ายบทเรียนแล้ว:</strong> ปลดล็อกโจทย์เขียนโค้ดปฏิบัติ 5 ข้อด้านล่างเรียบร้อยแล้ว (สามารถทบทวนหรือทำแบบทดสอบใหม่ได้ตลอดเวลา)</span>
+              <span><strong>ผ่านแบบทดสอบประจำบทเรียนแล้ว:</strong> สามารถทำแบบทดสอบซ้ำเพื่อทบทวนได้ตลอดเวลา</span>
             </div>`;
         } else {
           statusAlert.style.display = "block";
           statusAlert.innerHTML = `
             <div class="toast-msg" style="background:#FFFBEB; color:#B45309; border:1px solid rgba(245,158,11,0.3); display:flex; align-items:center; gap:0.5rem;">
               <i class='bx bx-info-circle' style="font-size:1.3rem;"></i>
-              <span><strong>เงื่อนไขการปลดล็อก:</strong> ต้องทำแบบทดสอบให้ได้คะแนนอย่างน้อย <strong>60% (${minPass} จาก ${totalQ} ข้อ)</strong> จึงจะปลดล็อกโจทย์เขียนโค้ดปฏิบัติ 5 ข้อ</span>
+              <span><strong>คำชี้แจง:</strong> ตอบคำถามให้ครบทั้ง ${totalQ} ข้อ (เกณฑ์ผ่าน <strong>${minPass} จาก ${totalQ} คะแนน</strong> หรือ 60%) และสามารถทบทวนเนื้อหาด้านล่างได้หลังทำกิจกรรม</span>
             </div>`;
         }
       }
@@ -7808,17 +7844,17 @@ __buf.getvalue()`);
         if (msgDiv) {
           msgDiv.innerHTML = r.passed
             ? `<div class="toast-msg" style="background: var(--status-success-bg); color: var(--status-success); border: 1px solid rgba(16, 185, 129, 0.3);">
-                 <i class='bx bx-party'></i> <strong>ยอดเยี่ยมมาก!</strong> คุณสอบผ่านแบบทดสอบท้ายบทแล้ว (${scoreVal}/${totalQ} คะแนน • ${pctVal}%) ระบบได้ปลดล็อกโจทย์เขียนโค้ดปฏิบัติ 5 ข้อด้านล่างเรียบร้อยแล้ว
+                 <i class='bx bx-party'></i> <strong>ยอดเยี่ยมมาก!</strong> คุณสอบผ่านแบบทดสอบประจำบทแล้ว (${scoreVal}/${totalQ} คะแนน • ${pctVal}%)
                </div>`
             : `<div class="toast-msg toast-danger">
-                 <i class='bx bx-error-circle'></i> ยังไม่ผ่านเกณฑ์ 60% (ได้ ${scoreVal}/${totalQ} คะแนน คิดเป็น ${pctVal}%) กรุณาทบทวนบทเรียนแล้วกดปุ่ม "ทำแบบทดสอบอีกครั้ง" เพื่อปลดล็อกภาคปฏิบัติ
+                 <i class='bx bx-error-circle'></i> ยังไม่ผ่านเกณฑ์ 60% (ได้ ${scoreVal}/${totalQ} คะแนน คิดเป็น ${pctVal}%) กรุณาทบทวนเนื้อหาบทเรียนด้านล่างแล้วลองทำแบบทดสอบอีกครั้ง
                </div>`;
         }
 
         const retryBtn = document.getElementById("retryQuizBtn");
         const gotoPracticalBtn = document.getElementById("gotoPracticalBtn");
         if (retryBtn) retryBtn.style.display = r.passed ? "none" : "inline-flex";
-        if (gotoPracticalBtn) gotoPracticalBtn.style.display = r.passed ? "inline-flex" : "none";
+        if (gotoPracticalBtn) gotoPracticalBtn.style.display = "inline-flex";
 
         const resultSheet = document.getElementById("lessonResult");
         if (resultSheet) {
@@ -7828,8 +7864,6 @@ __buf.getvalue()`);
 
         if (r.passed) {
           soundSuccess();
-          // ปลดล็อกโจทย์ปฏิบัติ 5 ข้อทันที
-          renderChallengeTasksOnly(currentLesson, true);
         } else {
           soundFail();
         }
@@ -7857,6 +7891,11 @@ __buf.getvalue()`);
     function scrollToPracticalSection() {
       const p = document.getElementById("codingChallengePanel");
       if (p) p.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function scrollToTheorySection() {
+      const t = document.getElementById("lessonTheorySection") || document.getElementById("lessonContent");
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     /* ========================================================
@@ -8426,8 +8465,10 @@ function finishGameAndReward() {
           const info=document.createElement("div");
           const title=document.createElement("strong");title.textContent=String(st.id)+" • "+String(st.name||"ไม่ระบุชื่อ");
           const pr=st.progress||{};
+          const preScoreText = (st.pretestScore !== null && st.pretestScore !== undefined) ? `${st.pretestScore}/${st.pretestMaxScore || 20}` : (pr.pretestScore !== null && pr.pretestScore !== undefined ? `${pr.pretestScore}/${pr.pretestMaxScore || 20}` : "ยังไม่สอบ");
+          const postScoreText = (st.posttestScore !== null && st.posttestScore !== undefined) ? `${st.posttestScore}/20` : (pr.posttestScore !== null && pr.posttestScore !== undefined ? `${pr.posttestScore}/20` : "ยังไม่สอบ");
           const meta=document.createElement("div");meta.style.color="var(--text-muted)";
-          meta.textContent=`สถานะบัญชี: ${st.status||"ACTIVE"} | สิทธิ์เข้าเรียน: พร้อมเข้าเรียนทันที | Pre-test: ${pr.pretest||"LOCKED"} | If-Else: ${pr.ifElse||"LOCKED"} | While: ${pr.whileLoop||"LOCKED"} | For: ${pr.forLoop||"LOCKED"}`;
+          meta.textContent=`สถานะบัญชี: ${st.status||"ACTIVE"} | คะแนนก่อนเรียน: ${preScoreText} | คะแนนหลังเรียน: ${postScoreText} | Pre-test: ${pr.pretest||"LOCKED"} | If-Else: ${pr.ifElse||"LOCKED"} | While: ${pr.whileLoop||"LOCKED"} | For: ${pr.forLoop||"LOCKED"}`;
           const meta2=document.createElement("div");meta2.style.color="var(--text-muted)";
           meta2.textContent=`กิจกรรม If-Else/While/For: ${pr.ifElseActivity||"LOCKED"} / ${pr.whileActivity||"LOCKED"} / ${pr.forActivity||"LOCKED"} | Arena: ${pr.arena||"LOCKED"} | Post-test: ${pr.posttest||"LOCKED"} | ด่านท้ายหลักสูตร: ${pr.finalQuiz||"LOCKED"} | หลักสูตร: ${pr.course||"LOCKED"}`;
           const results=document.createElement("div");results.style.cssText="font-size:.8rem;color:var(--text-muted);margin-top:.35rem";

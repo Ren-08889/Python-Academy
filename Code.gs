@@ -249,6 +249,58 @@ function logout(token) {
   return { success: true, message: "ออกจากระบบสำเร็จ" };
 }
 
+function upsertPreTestStatus_(ss, studentId, score, maxScore) {
+  ensureAcademySheets_();
+  const sh = ss.getSheetByName("PreTestStatus");
+  if (!sh) return;
+  const rows = sh.getDataRange().getValues();
+  const idx = rows.findIndex((r, i) => i > 0 && String(r[0]).trim().toLowerCase() === String(studentId).trim().toLowerCase());
+  const oldBest = idx > 0 ? (Number(rows[idx][2]) || 0) : 0;
+  const bestScore = idx > 0 ? Math.max(oldBest, score) : score;
+  const rec = [studentId, true, bestScore, maxScore, score, new Date()];
+  if (idx > 0) sh.getRange(idx + 1, 1, 1, 6).setValues([rec]);
+  else sh.appendRow(rec);
+}
+
+function getPreTestRecord_(ss, studentId) {
+  const sid = String(studentId || "").trim().toLowerCase();
+  if (!sid) return { score: null, latestScore: null, maxScore: PRETEST_QUESTIONS.length, completedAt: "" };
+  try {
+    const sh = ss.getSheetByName("PreTestStatus");
+    if (sh && sh.getLastRow() >= 2) {
+      const row = sh.getDataRange().getValues().slice(1).find(r => String(r[0]).trim().toLowerCase() === sid);
+      if (row) {
+        return {
+          score: Number(row[2]),
+          latestScore: row[4] !== "" && row[4] !== undefined ? Number(row[4]) : Number(row[2]),
+          maxScore: Number(row[3]) || PRETEST_QUESTIONS.length,
+          completedAt: row[5] ? String(row[5]) : ""
+        };
+      }
+    }
+  } catch (e) {}
+  try {
+    const qs = ss.getSheetByName(QUIZ_SHEET);
+    if (qs && qs.getLastRow() >= 2) {
+      const matches = qs.getDataRange().getValues().slice(1).filter(r =>
+        String(r[1]).trim().toLowerCase() === sid && String(r[2] || "").toLowerCase().includes("pre-test")
+      );
+      if (matches.length) {
+        const last = matches[matches.length - 1];
+        const rawScore = Number(last[3]);
+        const best = Math.max(...matches.map(m => Number(m[3]) || 0));
+        return {
+          score: best,
+          latestScore: rawScore,
+          maxScore: String(last[2] || "").includes("20") ? 20 : 100,
+          completedAt: last[4] ? String(last[4]) : ""
+        };
+      }
+    }
+  } catch (e) {}
+  return { score: null, latestScore: null, maxScore: PRETEST_QUESTIONS.length, completedAt: "" };
+}
+
 function getDashboardData(token) {
   const profile = getMyProfile(token);
   if (!profile.success) return profile;
@@ -278,14 +330,22 @@ function getDashboardData(token) {
     }
   }
 
+  const preRec = getPreTestRecord_(ss, studentId);
+
   return {
     success: true,
     student: {
       studentId: profile.studentId,
       studentName: profile.studentName
     },
+    pretestScore: preRec.score,
+    pretestLatestScore: preRec.latestScore,
+    pretestMaxScore: preRec.maxScore,
     progress: {
       pretestStatus: progress[1],
+      pretestScore: preRec.score,
+      pretestLatestScore: preRec.latestScore,
+      pretestMaxScore: preRec.maxScore,
       ifElseStatus: progress[2],
       whileStatus: progress[3],
       forLoopStatus: progress[4],
@@ -377,6 +437,7 @@ function submitPretest(token, answers) {
     const progressSheet = ss.getSheetByName(PROGRESS_SHEET);
 
     quizSheet.appendRow([Utilities.getUuid(), profile.studentId, "Pre-test (เต็ม 20)", score, new Date()]);
+    upsertPreTestStatus_(ss, profile.studentId, score, total);
 
     const lastRow = progressSheet.getLastRow();
     let studentRow = -1;
@@ -1018,6 +1079,7 @@ function ensureAcademySheets_() {
   const specs = {
     Students: ["StudentID", "StudentName", "PasswordHash", "Status"],
     Progress: ["StudentID", "PretestStatus", "IfElseStatus", "WhileStatus", "ForLoopStatus", "ActivityStatus", "IfElseActivityStatus", "WhileActivityStatus", "ForActivityStatus", "ArenaStatus", "PosttestStatus", "CourseStatus", "FinalQuizStatus"],
+    PreTestStatus: ["StudentID", "Completed", "Score", "MaxScore", "LatestScore", "CompletedAt"],
     PostTestStatus: ["StudentID", "Completed", "BestScore", "CompletedAt"],
     QuizResults: ["ResultID", "StudentID", "QuizName", "Score", "SubmittedAt"],
     ActivityLogs: ["LogID", "StudentID", "ActivityName", "Timestamp"],
@@ -1238,119 +1300,104 @@ function adminUploadVideoFile(token, payload) {
 
 
 // =========================================================
-// CODING CHALLENGES: 3 tasks per lesson, score total 10 / lesson
-// Client runs actual Python with Pyodide; server checks exact expected output.
+// CODING CHALLENGES: 5 analytical tasks per lesson (no hints), score total 10 / lesson
+// Client runs actual Python with Pyodide; server validates logic & expected output.
 // =========================================================
 const CODING_TASKS = {
   ifelse: [
     {
       title: "ตรวจสอบสิทธิ์เลือกตั้ง",
-      prompt: "จงเขียนโปรแกรมรับค่าอายุ (จำนวนเต็ม) จากผู้ใช้ 1 ค่า\n• หากอายุตั้งแต่ 18 ปีขึ้นไป ให้แสดงข้อความ: มีสิทธิ์เลือกตั้ง\n• หากอายุน้อยกว่า 18 ปี ให้แสดงข้อความ: ยังไม่มีสิทธิ์เลือกตั้ง\n(ข้อมูลทดสอบ: ป้อน 20)",
-      expected: "มีสิทธิ์เลือกตั้ง",
-      points: 2,
-      defaultInputs: ["20"]
+      prompt: "กฎหมายกำหนดให้ผู้มีสิทธิ์เลือกตั้งต้องมีอายุตั้งแต่ 18 ปีขึ้นไป หากอายุต่ำกว่า 18 ปีจะยังไม่มีสิทธิ์ จงวิเคราะห์เงื่อนไขและเขียนโปรแกรมรับค่าอายุจากผู้ใช้เพื่อแสดงผลลัพธ์ว่าเป็น 'มีสิทธิ์เลือกตั้ง' หรือ 'ยังไม่มีสิทธิ์เลือกตั้ง'",
+      expected: ["มีสิทธิ์เลือกตั้ง", "ยังไม่มีสิทธิ์เลือกตั้ง"],
+      points: 2
     },
     {
       title: "ตรวจสอบจำนวนบวก ลบ หรือศูนย์",
-      prompt: "จงเขียนโปรแกรมรับค่าตัวเลขจำนวนเต็ม 1 ค่า แล้วจำแนกประเภทของตัวเลขดังนี้:\n• มากกว่า 0 ให้แสดง: จำนวนบวก\n• น้อยกว่า 0 ให้แสดง: จำนวนลบ\n• เท่ากับ 0 ให้แสดง: ศูนย์\n(ข้อมูลทดสอบ: ป้อน 15)",
-      expected: "จำนวนบวก",
-      points: 2,
-      defaultInputs: ["15"]
+      prompt: "จงวิเคราะห์และเขียนโปรแกรมรับตัวเลขจำนวนเต็ม 1 ค่าจากผู้ใช้ เพื่อจำแนกและแสดงผลลัพธ์ว่าเป็น 'จำนวนบวก', 'จำนวนลบ' หรือ 'ศูนย์'",
+      expected: ["จำนวนบวก", "จำนวนลบ", "ศูนย์"],
+      points: 2
     },
     {
       title: "ระบบตัดเกรดวัดผล",
-      prompt: "จงเขียนโปรแกรมรับคะแนนสอบ (รองรับทศนิยม) จากผู้ใช้ แล้วประเมินเกรดตามเกณฑ์:\n• 80 คะแนนขึ้นไป: เกรด A\n• 70 - 79.99 คะแนน: เกรด B\n• 60 - 69.99 คะแนน: เกรด C\n• 50 - 59.99 คะแนน: เกรด D\n• ต่ำกว่า 50 คะแนน: เกรด F\n(ข้อมูลทดสอบ: ป้อน 85)",
-      expected: "เกรด A",
-      points: 2,
-      defaultInputs: ["85"]
+      prompt: "เกณฑ์การประเมินคะแนนสอบ (รองรับทศนิยม) มีดังนี้: 80 ขึ้นไปได้ เกรด A, 70–79.99 ได้ เกรด B, 60–69.99 ได้ เกรด C, 50–59.99 ได้ เกรด D และต่ำกว่า 50 ได้ เกรด F จงเขียนโปรแกรมรับคะแนนและวิเคราะห์เพื่อแสดงผลลัพธ์เป็น เกรด A, เกรด B, เกรด C, เกรด D หรือ เกรด F",
+      expected: ["เกรด A", "เกรด B", "เกรด C", "เกรด D", "เกรด F"],
+      points: 2
     },
     {
       title: "ตรวจสอบเงื่อนไขซื้อสินค้า",
-      prompt: "จงเขียนโปรแกรมรับข้อมูล 2 ค่าตามลำดับ คือ อายุ และ จำนวนเงินที่มี (จำนวนเต็ม)\nเงื่อนไขการซื้อสินค้า: ต้องมีอายุตั้งแต่ 18 ปีขึ้นไป และมีเงินตั้งแต่ 100 บาทขึ้นไปพร้อมกัน\n• หากผ่านเกณฑ์ทั้งคู่ ให้แสดง: สามารถซื้อสินค้าได้\n• หากไม่ผ่านเกณฑ์ ให้แสดง: ไม่สามารถซื้อสินค้าได้\n(ข้อมูลทดสอบ: ป้อน 20 และ 150)",
-      expected: "สามารถซื้อสินค้าได้",
-      points: 2,
-      defaultInputs: ["20", "150"]
+      prompt: "ร้านค้ากำหนดว่าผู้ซื้อต้องมีอายุตั้งแต่ 18 ปีขึ้นไป และต้องมีเงินตั้งแต่ 100 บาทขึ้นไปพร้อมกันจึงจะซื้อสินค้าได้ จงเขียนโปรแกรมรับค่าอายุและจำนวนเงิน (ตามลำดับ) แล้ววิเคราะห์แสดงผลลัพธ์ว่า 'สามารถซื้อสินค้าได้' หรือ 'ไม่สามารถซื้อสินค้าได้'",
+      expected: ["สามารถซื้อสินค้าได้", "ไม่สามารถซื้อสินค้าได้"],
+      points: 2
     },
     {
       title: "ระบบตรวจสอบรหัสผ่าน",
-      prompt: "จงเขียนโปรแกรมรับรหัสผ่านจากผู้ใช้\n• หากรหัสผ่านตรงกับ \"1234\" ให้แสดง: เข้าสู่ระบบสำเร็จ\n• หากไม่ตรง ให้แสดง: รหัสผ่านไม่ถูกต้อง\n(ข้อมูลทดสอบ: ป้อน 1234)",
-      expected: "เข้าสู่ระบบสำเร็จ",
-      points: 2,
-      defaultInputs: ["1234"]
+      prompt: "ระบบกำหนดรหัสผ่านที่ถูกต้องไว้คือ \"1234\" จงเขียนโปรแกรมรับรหัสผ่านจากผู้ใช้ แล้วตรวจสอบเพื่อแสดงผลลัพธ์ว่า 'เข้าสู่ระบบสำเร็จ' หรือ 'รหัสผ่านไม่ถูกต้อง'",
+      expected: ["เข้าสู่ระบบสำเร็จ", "รหัสผ่านไม่ถูกต้อง"],
+      points: 2
     }
   ],
   for: [
     {
       title: "แสดงตัวเลข 1 ถึง N",
-      prompt: "จงเขียนโปรแกรมรับจำนวนเต็ม N จากผู้ใช้ แล้วแสดงลำดับตัวเลขตั้งแต่ 1 จนถึง N ออกมาทีละบรรทัด\n(ข้อมูลทดสอบ: ป้อน 5)",
-      expected: "1\n2\n3\n4\n5",
-      points: 2,
-      defaultInputs: ["5"]
+      prompt: "จงวิเคราะห์และเขียนโปรแกรมรับค่าจำนวนเต็มบวก N (อย่างน้อย 2) จากผู้ใช้ แล้วแสดงลำดับตัวเลขตั้งแต่ 1 ถึง N ออกมาทีละบรรทัด",
+      expected: "__SEQ_1_TO_N__",
+      points: 2
     },
     {
       title: "แสดงเฉพาะเลขคู่ 2 ถึง 10",
-      prompt: "จงเขียนโปรแกรมแสดงเฉพาะเลขคู่ตั้งแต่ 2 ถึง 10 (ได้แก่ 2, 4, 6, 8, 10) ออกมาทางหน้าจอทีละบรรทัด",
+      prompt: "จงเขียนโปรแกรมวิเคราะห์และแสดงเฉพาะตัวเลขคู่ที่มีค่าตั้งแต่ 2 ถึง 10 ออกมาทางหน้าจอทีละบรรทัด",
       expected: "2\n4\n6\n8\n10",
-      points: 2,
-      defaultInputs: []
+      points: 2
     },
     {
       title: "คำนวณผลรวมสะสม 1 ถึง 5",
-      prompt: "จงเขียนโปรแกรมคำนวณผลรวมของตัวเลขตั้งแต่ 1 ถึง 5 แล้วแสดงผลลัพธ์ในรูปแบบ:\nผลรวม = 15",
+      prompt: "หากต้องการทราบผลรวมของตัวเลขจำนวนเต็มตั้งแต่ 1 ถึง 5 จงเขียนโปรแกรมคำนวณและแสดงผลลัพธ์ในรูปแบบ 'ผลรวม = <ค่าที่ได้>'",
       expected: "ผลรวม = 15",
-      points: 2,
-      defaultInputs: []
+      points: 2
     },
     {
       title: "โปรแกรมสูตรคูณแม่ N",
-      prompt: "จงเขียนโปรแกรมรับแม่สูตรคูณ N จากผู้ใช้ แล้วแสดงตารางสูตรคูณ 5 แถวแรก (คูณ 1 ถึง 5)\nตัวอย่างผลลัพธ์เมื่อป้อน 3:\n3 x 1 = 3\n3 x 2 = 6\n... จนถึง 3 x 5 = 15",
-      expected: "3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15",
-      points: 2,
-      defaultInputs: ["3"]
+      prompt: "จงเขียนโปรแกรมรับค่าแม่สูตรคูณ N (จำนวนเต็มบวก) แล้วคำนวณแสดงตารางสูตรคูณตั้งแต่คูณ 1 ถึงคูณ 5 ในรูปแบบ 'N x i = ผลลัพธ์' ทีละบรรทัด",
+      expected: "__MULT_TABLE_5__",
+      points: 2
     },
     {
       title: "คำนวณผลรวมคะแนนในลิสต์",
-      prompt: "กำหนดให้มีชุดข้อมูลคะแนน 4 ค่า คือ 10, 20, 30, 40\nจงเขียนโปรแกรมคำนวณผลรวมของคะแนนทั้งหมด แล้วแสดงผลลัพธ์ในรูปแบบ:\nคะแนนรวม = 100",
+      prompt: "กำหนดชุดข้อมูลคะแนน 4 ค่า ได้แก่ 10, 20, 30 และ 40 จงเขียนโปรแกรมคำนวณหาผลรวมของคะแนนทั้งหมด แล้วแสดงผลในรูปแบบ 'คะแนนรวม = <ผลลัพธ์>'",
       expected: "คะแนนรวม = 100",
-      points: 2,
-      defaultInputs: []
+      points: 2
     }
   ],
   while: [
     {
       title: "นับถอยหลังปล่อยยานอวกาศ",
-      prompt: "จงเขียนโปรแกรมวนซ้ำแบบตรวจสอบเงื่อนไขเพื่อนับถอยหลังตั้งแต่ 3, 2, 1 ทีละบรรทัด และเมื่อนับจบแล้วให้แสดงข้อความ: เริ่มการทำงาน!",
+      prompt: "จงวิเคราะห์และเขียนโปรแกรมให้นับถอยหลังตั้งแต่ 3, 2, 1 ทีละบรรทัด และเมื่อนับจบให้แสดงข้อความ 'เริ่มการทำงาน!' ในบรรทัดสุดท้าย",
       expected: ["3\n2\n1\nเริ่มการทำงาน! 🚀", "3\n2\n1\nเริ่มการทำงาน!", "3\n2\n1\nเริ่ม!"],
-      points: 2,
-      defaultInputs: []
+      points: 2
     },
     {
       title: "รับตัวเลขจนกว่าจะป้อนเลข 0",
-      prompt: "จงเขียนโปรแกรมรับค่าตัวเลขจำนวนเต็มจากผู้ใช้ซ้ำ ๆ ตราบใดที่ยังไม่ได้ป้อนเลข 0\n• หากไม่ใช่ 0 ให้แสดง: คุณกรอกเลข <ค่าที่กรอก> แล้วรับค่าใหม่\n• เมื่อผู้ใช้ป้อน 0 ให้หยุดการทำงานและแสดง: หยุดการทำงานแล้ว\n(ข้อมูลทดสอบ: ป้อน 5 แล้วตามด้วย 0)",
-      expected: ["คุณกรอกเลข 5\nหยุดการทำงานแล้ว", "คุณกรอกเลข: 5\nหยุดการทำงานแล้ว"],
-      points: 2,
-      defaultInputs: ["5", "0"]
+      prompt: "จงเขียนโปรแกรมรับจำนวนเต็มจากผู้ใช้ซ้ำไปเรื่อย ๆ จนกว่าจะป้อนเลข 0: หากไม่ใช่ 0 ให้แสดงข้อความ 'คุณกรอกเลข <ค่าที่กรอก>' แล้วรับค่าถัดไป แต่เมื่อป้อน 0 ให้หยุดการทำงานและแสดงข้อความ 'หยุดการทำงานแล้ว'",
+      expected: ["หยุดการทำงานแล้ว"],
+      points: 2
     },
     {
-      title: "คำนวณผลรวม 1 ถึง 5 ด้วย While Loop",
-      prompt: "จงเขียนโปรแกรมคำนวณหาผลรวมของตัวเลขตั้งแต่ 1 ถึง 5 โดยใช้การวนซ้ำแบบตรวจสอบเงื่อนไข แล้วแสดงผลลัพธ์ในรูปแบบ:\nผลรวม = 15",
+      title: "คำนวณผลรวม 1 ถึง 5",
+      prompt: "จงวิเคราะห์การทำงานแบบวนซ้ำตามเงื่อนไขเพื่อคำนวณหาผลรวมตั้งแต่ 1 ถึง 5 แล้วแสดงผลลัพธ์ในรูปแบบ 'ผลรวม = <ค่าที่ได้>'",
       expected: "ผลรวม = 15",
-      points: 2,
-      defaultInputs: []
+      points: 2
     },
     {
       title: "แยกเลขคู่และเลขคี่ 1 ถึง 5",
-      prompt: "จงเขียนโปรแกรมตรวจสอบตัวเลขตั้งแต่ 1 ถึง 5 ทีละตัวว่าเป็นเลขคู่หรือเลขคี่ แล้วแสดงผลทีละบรรทัดในรูปแบบ:\n1 เป็นเลขคี่\n2 เป็นเลขคู่\n... จนถึง 5",
+      prompt: "จงเขียนโปรแกรมตรวจสอบตัวเลขตั้งแต่ 1 ถึง 5 ทีละตัวว่าเป็นเลขคู่หรือเลขคี่ แล้วแสดงผลทีละบรรทัดในรูปแบบ '<ตัวเลข> เป็นเลขคู่' หรือ '<ตัวเลข> เป็นเลขคี่'",
       expected: "1 เป็นเลขคี่\n2 เป็นเลขคู่\n3 เป็นเลขคี่\n4 เป็นเลขคู่\n5 เป็นเลขคี่",
-      points: 2,
-      defaultInputs: []
+      points: 2
     },
     {
       title: "ระบบรับรหัสผ่านจนกว่าจะถูกต้อง",
-      prompt: "จงเขียนโปรแกรมตรวจสอบรหัสผ่าน โดยกำหนดรหัสที่ถูกต้องคือ \"1234\"\n• หากผู้ใช้กรอกรหัสผิด ให้แสดงว่า \"รหัสผ่านไม่ถูกต้อง\" และวนรับรหัสใหม่\n• หากกรอกถูกต้อง ให้หยุดวนซ้ำและแสดง: เข้าสู่ระบบสำเร็จ\n(ข้อมูลทดสอบ: ป้อน 1234)",
-      expected: "เข้าสู่ระบบสำเร็จ",
-      points: 2,
-      defaultInputs: ["1234"]
+      prompt: "ระบบตั้งรหัสผ่านที่ถูกต้องไว้คือ \"1234\" จงเขียนโปรแกรมให้ผู้ใช้กรอกรหัสผ่าน: หากกรอกผิดให้แสดงว่า 'รหัสผ่านไม่ถูกต้อง' และให้กรอกใหม่จนกว่าจะถูกต้องจึงหยุดและแสดง 'เข้าสู่ระบบสำเร็จ'",
+      expected: ["เข้าสู่ระบบสำเร็จ"],
+      points: 2
     }
   ]
 };
@@ -1368,7 +1415,6 @@ function getCodingChallenges(token, lessonKey) {
   const tasks = CODING_TASKS[lessonKey];
   if (!tasks) return {success:false,message:"ไม่พบบทเรียน"};
   const totalPoints = tasks.reduce((sum, task) => sum + Number(task.points || 0), 0);
-  const quizPassed = profile.role === "admin" || hasPassedLessonQuiz_(profile.studentId, lessonKey);
   const sheet = getDatabase().getSheetByName("CodingChallenges");
   const rows = sheet.getDataRange().getValues().slice(1).filter(r => String(r[0])===profile.studentId && String(r[1])===lessonKey);
   const completed = {};
@@ -1391,7 +1437,6 @@ function getCodingChallenges(token, lessonKey) {
       title: t.title,
       prompt: t.prompt,
       points: t.points,
-      defaultInputs: t.defaultInputs || [],
       completed: !!completed[i + 1],
       score: completed[i + 1]?.score || 0,
       submittedCode: completed[i + 1]?.code || ""
@@ -1399,8 +1444,26 @@ function getCodingChallenges(token, lessonKey) {
     completedCount: Object.keys(completed).length,
     totalScore,
     totalPoints,
-    quizPassed
+    quizPassed: true
   };
+}
+
+function validateDynamicChallengeOutput_(expected, output) {
+  const lines = String(output || "").split(/\n+/).map(s => s.trim()).filter(Boolean);
+  if (expected === "__SEQ_1_TO_N__") {
+    return lines.length >= 2 && lines.every((v, idx) => /^\d+$/.test(v) && Number(v) === idx + 1);
+  }
+  if (expected === "__MULT_TABLE_5__") {
+    if (lines.length !== 5) return false;
+    const firstMatch = lines[0].match(/^(-?\d+)\s*[xX*×]\s*1\s*=\s*(-?\d+)$/);
+    if (!firstMatch) return false;
+    const n = Number(firstMatch[1]);
+    return lines.every((line, idx) => {
+      const m = line.match(/^(-?\d+)\s*[xX*×]\s*(\d+)\s*=\s*(-?\d+)$/);
+      return !!m && Number(m[1]) === n && Number(m[2]) === idx + 1 && Number(m[3]) === n * (idx + 1);
+    });
+  }
+  return false;
 }
 
 function submitCodingChallenge(token, lessonKey, challengeNo, code, output) {
@@ -1416,16 +1479,21 @@ function submitCodingChallenge(token, lessonKey, challengeNo, code, output) {
     if (row < 2) return {success:false,message:"ไม่พบข้อมูลความก้าวหน้า"};
     const st = String(progress.getRange(row,col).getValue()||"").toUpperCase();
     if (col !== 3 && st !== "UNLOCKED" && st !== "COMPLETED") return {success:false,message:"ยังไม่ปลดล็อกบทเรียนนี้"};
-    if (!hasPassedLessonQuiz_(profile.studentId, lessonKey)) {
-      return { success: false, message: "กรุณาทำแบบทดสอบท้ายบทให้ผ่านเกณฑ์ 60% ก่อนส่งโจทย์ปฏิบัติ" };
-    }
   }
   code = String(code || ""); output = String(output || "").replace(/\r/g,"").trim();
   if (code.length < 5 || code.length > 10000) return {success:false,message:"กรุณาเขียนโค้ดให้ครบก่อนส่งตรวจ"};
-  
+
+  const requiredKeyword = ({ ifelse: /\bif\b/, for: /\bfor\b/, while: /\bwhile\b/ })[lessonKey];
+  if (requiredKeyword && !requiredKeyword.test(code)) {
+    const hintMsg = lessonKey === "ifelse" ? "กรุณาใช้คำสั่งเงื่อนไข (if) ในการแก้โจทย์ข้อนี้" : lessonKey === "for" ? "กรุณาใช้คำสั่งวนซ้ำ (for) ในการแก้โจทย์ข้อนี้" : "กรุณาใช้คำสั่งวนซ้ำ (while) ในการแก้โจทย์ข้อนี้";
+    return { success: true, passed: false, score: 0, points: tasks[n - 1].points, passedCount: 0, message: hintMsg };
+  }
+
   const expected = tasks[n - 1].expected;
   let passed = false;
-  if (Array.isArray(expected)) {
+  if (typeof expected === "string" && expected.indexOf("__") === 0) {
+    passed = validateDynamicChallengeOutput_(expected, output);
+  } else if (Array.isArray(expected)) {
     passed = expected.some(exp => {
       const e = String(exp).trim();
       return output === e || output.includes(e);
@@ -1575,7 +1643,21 @@ function adminGetStudentOverview(token) {
  const ss=getDatabase(), students=ss.getSheetByName(STUDENTS_SHEET).getDataRange().getValues().slice(1);
  const progress=ss.getSheetByName(PROGRESS_SHEET).getDataRange().getValues().slice(1);
  const quizzes=ss.getSheetByName(QUIZ_SHEET).getDataRange().getValues().slice(1);
- return {success:true,students:students.filter(r=>r[0]).map(r=>{const x=progress.find(v=>String(v[0]).trim().toLowerCase()===String(r[0]).trim().toLowerCase())||[];return {id:r[0],name:r[1],status:r[3]||"ACTIVE",passwordSet:!!String(r[2]||"").trim(),progress:{pretest:x[1]||"LOCKED",ifElse:x[2]||"LOCKED",whileLoop:x[3]||"LOCKED",forLoop:x[4]||"LOCKED",ifElseActivity:x[6]||"LOCKED",whileActivity:x[7]||"LOCKED",forActivity:x[8]||"LOCKED",arena:x[9]||"LOCKED",posttest:x[10]||"LOCKED",course:x[11]||"LOCKED",finalQuiz:x[12]||"LOCKED"},results:quizzes.filter(q=>String(q[1]).trim().toLowerCase()===String(r[0]).trim().toLowerCase()).map(q=>({name:q[2],score:q[3],date:q[4]}))};})};
+ const pretestSh=ss.getSheetByName("PreTestStatus");
+ const pretestRows=pretestSh&&pretestSh.getLastRow()>=2?pretestSh.getDataRange().getValues().slice(1):[];
+ const posttestSh=ss.getSheetByName("PostTestStatus");
+ const posttestRows=posttestSh&&posttestSh.getLastRow()>=2?posttestSh.getDataRange().getValues().slice(1):[];
+ return {success:true,students:students.filter(r=>r[0]).map(r=>{
+  const sid=String(r[0]).trim().toLowerCase();
+  const x=progress.find(v=>String(v[0]).trim().toLowerCase()===sid)||[];
+  const preRow=pretestRows.find(v=>String(v[0]).trim().toLowerCase()===sid);
+  const postRow=posttestRows.find(v=>String(v[0]).trim().toLowerCase()===sid);
+  const preQuizRows=quizzes.filter(q=>String(q[1]).trim().toLowerCase()===sid&&String(q[2]||"").toLowerCase().includes("pre-test"));
+  const pretestScore=preRow?Number(preRow[2]):(preQuizRows.length?Number(preQuizRows[preQuizRows.length-1][3]):null);
+  const pretestMaxScore=preRow?(Number(preRow[3])||20):20;
+  const posttestScore=postRow?Number(postRow[2]):null;
+  return {id:r[0],name:r[1],status:r[3]||"ACTIVE",passwordSet:!!String(r[2]||"").trim(),pretestScore,pretestMaxScore,posttestScore,progress:{pretest:x[1]||"LOCKED",pretestScore,pretestMaxScore,posttestScore,ifElse:x[2]||"LOCKED",whileLoop:x[3]||"LOCKED",forLoop:x[4]||"LOCKED",ifElseActivity:x[6]||"LOCKED",whileActivity:x[7]||"LOCKED",forActivity:x[8]||"LOCKED",arena:x[9]||"LOCKED",posttest:x[10]||"LOCKED",course:x[11]||"LOCKED",finalQuiz:x[12]||"LOCKED"},results:quizzes.filter(q=>String(q[1]).trim().toLowerCase()===sid).map(q=>({name:q[2],score:q[3],date:q[4]}))};
+ })};
 }
 
 
@@ -1592,78 +1674,78 @@ const ARENA_TASKS = [
   {
     category: "🔀 หมวด If-Else",
     title: "ตรวจสอบอุณหภูมิห้องแล็บ",
-    prompt: "กำหนด temperature = 32 ให้เขียน if-elif-else ตรวจสอบสภาพอากาศ:\n- ถ้า temperature >= 35 แสดง 'อากาศร้อนมาก'\n- ถ้า temperature >= 30 แสดง 'อากาศร้อน'\n- ถ้า temperature >= 25 แสดง 'อากาศอบอุ่น'\n- มิฉะนั้น (else) แสดง 'อากาศเย็น'",
+    prompt: "กำหนด temperature = 32 จงวิเคราะห์และเขียนโปรแกรมตรวจสอบสภาพอากาศ:\n- ตั้งแต่ 35 ขึ้นไป แสดง 'อากาศร้อนมาก'\n- ตั้งแต่ 30 ขึ้นไป แสดง 'อากาศร้อน'\n- ตั้งแต่ 25 ขึ้นไป แสดง 'อากาศอบอุ่น'\n- ต่ำกว่า 25 แสดง 'อากาศเย็น'",
     expected: "อากาศร้อน",
-    starterCode: "temperature = 32\n\n# เขียน if-elif-else ตรวจสอบอุณหภูมิ\n"
+    starterCode: "temperature = 32\n"
   },
   {
     category: "🔀 หมวด If-Else",
     title: "ตรวจสอบคุณสมบัติผู้เข้าแข่งขัน",
-    prompt: "กำหนด age = 19 และ level = 2 ให้เขียน if-else ร่วมกับ and ตรวจสอบว่า:\nถ้า age >= 18 and level >= 2 ให้แสดง 'ผ่านคุณสมบัติ' มิฉะนั้นแสดง 'ไม่ผ่านคุณสมบัติ'",
+    prompt: "กำหนด age = 19 และ level = 2 จงวิเคราะห์เงื่อนไขการผ่านเกณฑ์ (ต้องมีอายุตั้งแต่ 18 ปีขึ้นไป และ level ตั้งแต่ 2 ขึ้นไปพร้อมกัน) เพื่อแสดง 'ผ่านคุณสมบัติ' หรือ 'ไม่ผ่านคุณสมบัติ'",
     expected: "ผ่านคุณสมบัติ",
-    starterCode: "age = 19\nlevel = 2\n\n# เขียน if-else ตรวจสอบเงื่อนไขคู่ด้วย and\n"
+    starterCode: "age = 19\nlevel = 2\n"
   },
   {
     category: "🔀 หมวด If-Else",
     title: "ระบบคำนวณตัดเกรดจำแนกระดับ",
-    prompt: "กำหนด score = 75 ให้เขียน if-elif-else ตัดเกรด:\n- score >= 80 แสดง 'เกรด A'\n- score >= 70 แสดง 'เกรด B'\n- score >= 60 แสดง 'เกรด C'\n- score >= 50 แสดง 'เกรด D'\n- else แสดง 'เกรด F'",
+    prompt: "กำหนด score = 75 จงวิเคราะห์และเขียนโปรแกรมประเมินเกรดตามเกณฑ์ 80+, 70+, 60+, 50+ และต่ำกว่า 50 เพื่อแสดงผลเป็น เกรด A, เกรด B, เกรด C, เกรด D หรือ เกรด F",
     expected: "เกรด B",
-    starterCode: "score = 75\n\n# เขียน if-elif-else ตัดเกรดจากตัวแปร score\n"
+    starterCode: "score = 75\n"
   },
 
   // หมวดที่ 2: For Loop (ด่าน 4 - 6)
   {
     category: "🔁 หมวด For Loop",
-    title: "สร้างลำดับตัวเลขก้าวละ 2 ด้วย range()",
-    prompt: "ใช้คำสั่ง for ร่วมกับ range(1, 10, 2) เพื่อแสดงตัวเลข 1, 3, 5, 7, 9 ออกมาทีละบรรทัดด้วย print(i)",
+    title: "สร้างลำดับตัวเลขก้าวละ 2",
+    prompt: "จงเขียนโปรแกรมแสดงลำดับตัวเลขคี่ตั้งแต่ 1 ถึง 9 (1, 3, 5, 7, 9) ออกมาทีละบรรทัด",
     expected: "1\n3\n5\n7\n9",
-    starterCode: "# ใช้ for ร่วมกับ range(1, 10, 2) พิมพ์ตัวเลขทีละบรรทัด\n"
+    starterCode: ""
   },
   {
     category: "🔁 หมวด For Loop",
     title: "คำนวณผลรวมสะสม 1 ถึง 10",
-    prompt: "กำหนด total = 0 ใช้ for i in range(1, 11): บวกสะสมค่า total = total + i เมื่อจบลูปสั่ง print(\"ผลรวม =\", total) (ต้องได้ผลลัพธ์: ผลรวม = 55)",
+    prompt: "กำหนด total = 0 จงเขียนโปรแกรมคำนวณผลรวมของตัวเลขตั้งแต่ 1 ถึง 10 แล้วแสดงผลในรูปแบบ 'ผลรวม = <ค่าที่ได้>'",
     expected: "ผลรวม = 55",
-    starterCode: "total = 0\n\n# ใช้ for วนซ้ำ 1 ถึง 10 บวกสะสมเข้า total แล้วพิมพ์ 'ผลรวม = 55'\n"
+    starterCode: "total = 0\n"
   },
   {
     category: "🔁 หมวด For Loop",
-    title: "คัดกรองพิมพ์เฉพาะเลขคู่ด้วย For + If",
-    prompt: "ใช้ for i in range(1, 11): ร่วมกับเงื่อนไข if i % 2 == 0: เพื่อพิมพ์เฉพาะเลขคู่ 2, 4, 6, 8, 10 ออกมาทีละบรรทัด",
+    title: "คัดกรองพิมพ์เฉพาะเลขคู่",
+    prompt: "จงเขียนโปรแกรมวิเคราะห์และพิมพ์เฉพาะเลขคู่ตั้งแต่ 1 ถึง 10 ออกมาทีละบรรทัด",
     expected: "2\n4\n6\n8\n10",
-    starterCode: "# ใช้ for 1 ถึง 10 และ if ตรวจสอบหาร 2 ลงตัว เพื่อพิมพ์เฉพาะเลขคู่\n"
+    starterCode: ""
   },
 
   // หมวดที่ 3: While Loop (ด่าน 7 - 9)
   {
     category: "⏳ หมวด While Loop",
     title: "ระบบนับถอยหลังสู่อวกาศ",
-    prompt: "กำหนด countdown = 5 ใช้ while countdown > 0: พิมพ์ค่า countdown และลดค่า countdown -= 1 ทีละรอบ เมื่อจบลูปสั่ง print(\"เริ่มภารกิจสำเร็จ! 🚀\")",
+    prompt: "กำหนด countdown = 5 จงเขียนโปรแกรมให้นับถอยหลังจาก 5 ถึง 1 ทีละบรรทัด แล้วแสดงข้อความ 'เริ่มภารกิจสำเร็จ! 🚀' เมื่อจบลูป",
     expected: ["5\n4\n3\n2\n1\nเริ่มภารกิจสำเร็จ! 🚀", "5\n4\n3\n2\n1\nเริ่มภารกิจสำเร็จ!"],
-    starterCode: "countdown = 5\n\n# เขียน while loop นับถอยหลัง 5 ถึง 1 และพิมพ์ 'เริ่มภารกิจสำเร็จ! 🚀'\n"
+    starterCode: "countdown = 5\n"
   },
   {
     category: "⏳ หมวด While Loop",
-    title: "หาผลรวมสะสมด้วย While Loop",
-    prompt: "กำหนด i = 1 และ total = 0 ใช้ while i <= 6: นำค่าบวกสะสม total = total + i และเพิ่ม i += 1 ในแต่ละรอบ เมื่อจบลูปสั่ง print(\"ผลรวม =\", total) (ต้องได้ผลลัพธ์: ผลรวม = 21)",
+    title: "หาผลรวมสะสม 1 ถึง 6",
+    prompt: "กำหนด i = 1 และ total = 0 จงเขียนโปรแกรมคำนวณหาผลรวมตั้งแต่ 1 ถึง 6 แล้วแสดงผลลัพธ์ในรูปแบบ 'ผลรวม = <ค่าที่ได้>'",
     expected: "ผลรวม = 21",
-    starterCode: "i = 1\ntotal = 0\n\n# ใช้ while loop หาผลรวม 1 ถึง 6 แล้วพิมพ์ 'ผลรวม = 21'\n"
+    starterCode: "i = 1\ntotal = 0\n"
   },
   {
     category: "⏳ หมวด While Loop",
-    title: "ควบคุมการออกจากลูปฉุกเฉินด้วย break",
-    prompt: "กำหนด power = 10 ในลูป while True: ให้เพิ่ม power += 15 และเขียน if power >= 50: สั่ง break เมื่อจบลูปให้พิมพ์ 'พลังงานปลอดภัย = ' ตามด้วยค่า power (ต้องได้: พลังงานปลอดภัย = 55)",
+    title: "ควบคุมการหยุดเมื่อถึงค่าเป้าหมาย",
+    prompt: "กำหนด power = 10 ในแต่ละรอบให้เพิ่มค่า power ทีละ 15 จนกว่า power จะมีค่าตั้งแต่ 50 ขึ้นไปจึงหยุด แล้วแสดงผลในรูปแบบ 'พลังงานปลอดภัย = <ค่า power>'",
     expected: "พลังงานปลอดภัย = 55",
-    starterCode: "power = 10\n\nwhile True:\n    power += 15\n    # เขียน if ตรวจสอบ power >= 50 แล้วสั่ง break\n    \n\nprint(\"พลังงานปลอดภัย =\", power)\n"
+    starterCode: "power = 10\n"
   },
 
   // หมวดที่ 4: Capstone Integration (ด่าน 10)
   {
     category: "🏆 ภารกิจบูรณาการ",
     title: "นับจำนวนผู้ผ่านเกณฑ์จากลิสต์คะแนน",
-    prompt: "กำหนด scores = [45, 80, 65, 30, 90, 72] และ passed_count = 0\nใช้ for s in scores: ตรวจสอบ if s >= 60: ให้เพิ่ม passed_count += 1 เมื่อจบลูปพิมพ์ print(\"จำนวนผู้ผ่านเกณฑ์ =\", passed_count) (ต้องได้: จำนวนผู้ผ่านเกณฑ์ = 4)",
+    prompt: "กำหนด scores = [45, 80, 65, 30, 90, 72] และ passed_count = 0 จงเขียนโปรแกรมวิเคราะห์นับจำนวนคะแนนที่ผ่านเกณฑ์ (>= 60) แล้วแสดงผลลัพธ์ในรูปแบบ 'จำนวนผู้ผ่านเกณฑ์ = <จำนวน>'",
     expected: "จำนวนผู้ผ่านเกณฑ์ = 4",
-    starterCode: "scores = [45, 80, 65, 30, 90, 72]\npassed_count = 0\n\n# ใช้ for ท่อง scores ถ้าคะแนน >= 60 ให้เพิ่ม passed_count += 1\n# เมื่อจบลูป พิมพ์ 'จำนวนผู้ผ่านเกณฑ์ = 4'\n"
+    starterCode: "scores = [45, 80, 65, 30, 90, 72]\npassed_count = 0\n"
   }
 ];
 function hasPassedLessonActivity_(studentId, lessonKey) {
