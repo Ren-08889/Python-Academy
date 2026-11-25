@@ -2740,13 +2740,22 @@
               </div>
             </div>
 
-            <!-- ส่วนที่ 1 (ด้านบน): โจทย์เขียนโค้ดปฏิบัติ 5 ข้อ (วิเคราะห์และเขียนโค้ดโดยไม่มีคำใบ้) -->
-            <div id="codingChallengeContainer" style="margin-top: 0;"></div>
+            <!-- ส่วนที่ 1: เนื้อหาบทเรียนและทฤษฎีประกอบ -->
+            <div id="lessonTheorySection" class="lesson-content-container" style="margin-top: 0;">
+              <div class="arena-container" style="margin-bottom: 1.25rem; padding: 1.15rem 1.5rem;">
+                <h3 style="margin:0;"><i class='bx bx-book-open'></i> 1. เนื้อหาบทเรียน</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.3rem;">ศึกษาหลักการทำงาน โครงสร้างคำสั่ง และตัวอย่างประกอบก่อนลงมือปฏิบัติ</p>
+              </div>
+              <div class="theory-pane" id="lessonContent"></div>
+            </div>
 
-            <!-- ส่วนที่ 2: แบบทดสอบประจำบทเรียน (15 ข้อ เต็ม 15 คะแนน) -->
+            <!-- ส่วนที่ 2: แบบทดสอบปฏิบัติ 5 ข้อ (วิเคราะห์และเขียนโค้ดเอง ไม่มีคำใบ้/เฉลย) -->
+            <div id="codingChallengeContainer" style="margin-top: 3rem;"></div>
+
+            <!-- ส่วนที่ 3: แบบทดสอบท้ายบทเรียน (15 ข้อ เต็ม 15 คะแนน) -->
             <div class="arena-container" id="lessonQuizGate" style="margin-top: 3rem; display:none;">
               <div class="module-head">
-                <h3 id="lessonQuizHeaderTitle">✍️ แบบทดสอบประจำบทเรียน (Knowledge Check)</h3>
+                <h3 id="lessonQuizHeaderTitle">✍️ 3. แบบทดสอบท้ายบทเรียน (Knowledge Check)</h3>
                 <span id="lessonQuizPassingCriteria">เกณฑ์การผ่าน 60% ขึ้นไป (9 จาก 15 คะแนน)</span>
               </div>
 
@@ -2755,11 +2764,11 @@
               <div id="lessonQuestions"></div>
 
               <button class="btn btn-primary" id="submitLessonButton" onclick="submitLessonQuiz()" style="width: 100%; margin-top: 1.5rem; font-size:1.02rem; padding:0.85rem 1.5rem; justify-content:center;">
-                <span>ส่งคำตอบแบบทดสอบ (ตรวจคะแนน)</span> <i class='bx bx-check-circle'></i>
+                <span>ส่งคำตอบแบบทดสอบท้ายบท (ตรวจคะแนน)</span> <i class='bx bx-check-circle'></i>
               </button>
 
               <div id="lessonResult" class="result-sheet" style="display: none; margin-top: 1.75rem;">
-                <h3>สรุปผลการประเมินแบบทดสอบประจำบท</h3>
+                <h3>สรุปผลการประเมินแบบทดสอบท้ายบทเรียน</h3>
                 <div id="lessonScore" class="score-circle">-- / 15</div>
                 <p id="lessonDetail" style="font-size: 1.1rem; margin-bottom: 1.25rem;"></p>
                 <div id="lessonMessage"></div>
@@ -2768,25 +2777,16 @@
                     <i class='bx bx-refresh'></i> ทำแบบทดสอบอีกครั้ง
                   </button>
                   <button class="btn btn-primary" id="gotoPracticalBtn" onclick="scrollToPracticalSection()" style="display:none;">
-                    กลับไปดูโจทย์ปฏิบัติด้านบน <i class='bx bx-code-block'></i>
+                    กลับไปดูแบบทดสอบปฏิบัติด้านบน <i class='bx bx-code-block'></i>
                   </button>
                   <button class="btn btn-secondary" onclick="scrollToTheorySection()">
-                    <i class='bx bx-book-open'></i> ทบทวนเนื้อหาด้านล่าง
+                    <i class='bx bx-book-open'></i> ทบทวนเนื้อหาด้านบน
                   </button>
                   <button class="btn btn-ghost" onclick="backDashboard()">
                     กลับสู่หน้าแดชบอร์ด <i class='bx bx-home'></i>
                   </button>
                 </div>
               </div>
-            </div>
-
-            <!-- ส่วนที่ 3 (หลังสุด): เนื้อหาบทเรียนและทฤษฎีประกอบ -->
-            <div id="lessonTheorySection" class="lesson-content-container" style="margin-top: 3rem;">
-              <div class="arena-container" style="margin-bottom: 1.25rem; padding: 1.15rem 1.5rem;">
-                <h3 style="margin:0;"><i class='bx bx-book-open'></i> เนื้อหาบทเรียนและตัวอย่างประกอบ</h3>
-                <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.3rem;">สรุปหลักการทำงานและตัวอย่างโค้ดสำหรับศึกษาทบทวนเพิ่มเติม</p>
-              </div>
-              <div class="theory-pane" id="lessonContent"></div>
             </div>
           </div>
 
@@ -6248,10 +6248,9 @@
         return;
       }
 
-      // 1. แสดงปฏิบัติ 5 ข้อด้านบนสุด (ปลดล็อกให้วิเคราะห์และลงมือทำทันที)
-      renderChallengeTasksOnly(type, true);
-      // 2. แสดงเนื้อหาบทเรียนไว้ด้านล่างสุดสำหรับศึกษาทบทวนเพิ่มเติม
+      // เรียงลำดับบทเรียน: 1. เนื้อหา -> 2. แบบทดสอบปฏิบัติ -> 3. แบบทดสอบท้ายบทเรียน
       renderLessonContent(type);
+      renderChallengeTasksOnly(type, true);
       showArea("lessonArea");
 
       document.querySelectorAll(".sidebar-nav .nav-link").forEach(link => link.classList.remove("active"));
@@ -6532,13 +6531,13 @@ __buf.getvalue()`);
       panel.id = "codingChallengePanel";
       panel.style.marginTop = "0";
 
-      // แสดงกิจกรรมปฏิบัติ 5 ข้อด้านบนสุด (วิเคราะห์และเขียนโค้ดโดยไม่มีคำใบ้)
+      // ส่วนที่ 2: แบบทดสอบปฏิบัติ 5 ข้อ (วิเคราะห์และเขียนโค้ดเอง ไม่มีคำใบ้และไม่มีเฉลย)
       panel.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.4rem;">
-          <h3 style="margin:0;"><i class='bx bx-code-block'></i> 💻 กิจกรรมปฏิบัติ: วิเคราะห์โจทย์และเขียนโค้ด Python (5 ข้อ)</h3>
-          <span class="status-pill unlocked" style="font-size:0.8rem; font-weight:700;"><i class='bx bx-brain'></i> วิเคราะห์ด้วยตนเอง (ไม่มีคำใบ้)</span>
+          <h3 style="margin:0;"><i class='bx bx-code-block'></i> 💻 2. แบบทดสอบปฏิบัติ: วิเคราะห์โจทย์และเขียนโค้ด Python (5 ข้อ)</h3>
+          <span class="status-pill unlocked" style="font-size:0.8rem; font-weight:700;"><i class='bx bx-brain'></i> วิเคราะห์ด้วยตนเอง (ไม่มีคำใบ้/เฉลย)</span>
         </div>
-        <p id="challengeScoreSummary" style="color:var(--text-muted)">อ่านสถานการณ์ วิเคราะห์ปัญหา และเขียนโปรแกรม Python เพื่อส่งตรวจ • กำลังโหลดคะแนนเต็ม...</p>
+        <p id="challengeScoreSummary" style="color:var(--text-muted)">อ่านโจทย์ วิเคราะห์ปัญหา และเขียนโปรแกรม Python เพื่อส่งตรวจ • กำลังโหลดคะแนนเต็ม...</p>
         <div id="challengeTasks">กำลังโหลดโจทย์...</div>
       `;
       container.appendChild(panel);
@@ -7761,7 +7760,7 @@ __buf.getvalue()`);
       const minPass = lessonData?.minPassQuestions || Math.ceil(totalQ * 0.6);
 
       const titleEl = document.getElementById("lessonQuizHeaderTitle");
-      if (titleEl) titleEl.innerHTML = `✍️ แบบทดสอบประจำบทเรียน: ${lesson.title || type} (${totalQ} ข้อ • คะแนนเต็ม ${totalQ} คะแนน)`;
+      if (titleEl) titleEl.innerHTML = `✍️ 3. แบบทดสอบท้ายบทเรียน: ${lesson.title || type} (${totalQ} ข้อ • คะแนนเต็ม ${totalQ} คะแนน)`;
 
       const criteriaEl = document.getElementById("lessonQuizPassingCriteria");
       if (criteriaEl) criteriaEl.textContent = `เกณฑ์การผ่าน 60% ขึ้นไป (${minPass} จาก ${totalQ} คะแนน)`;
@@ -7773,14 +7772,14 @@ __buf.getvalue()`);
           statusAlert.innerHTML = `
             <div class="toast-msg" style="background:var(--status-success-bg); color:var(--status-success); border:1px solid rgba(16,185,129,0.3); display:flex; align-items:center; gap:0.5rem;">
               <i class='bx bx-check-circle' style="font-size:1.3rem;"></i>
-              <span><strong>ผ่านแบบทดสอบประจำบทเรียนแล้ว:</strong> สามารถทำแบบทดสอบซ้ำเพื่อทบทวนได้ตลอดเวลา</span>
+              <span><strong>ผ่านแบบทดสอบท้ายบทเรียนแล้ว:</strong> สามารถทำแบบทดสอบซ้ำเพื่อทบทวนได้ตลอดเวลา</span>
             </div>`;
         } else {
           statusAlert.style.display = "block";
           statusAlert.innerHTML = `
             <div class="toast-msg" style="background:#FFFBEB; color:#B45309; border:1px solid rgba(245,158,11,0.3); display:flex; align-items:center; gap:0.5rem;">
               <i class='bx bx-info-circle' style="font-size:1.3rem;"></i>
-              <span><strong>คำชี้แจง:</strong> ตอบคำถามให้ครบทั้ง ${totalQ} ข้อ (เกณฑ์ผ่าน <strong>${minPass} จาก ${totalQ} คะแนน</strong> หรือ 60%) และสามารถทบทวนเนื้อหาด้านล่างได้หลังทำกิจกรรม</span>
+              <span><strong>คำชี้แจง:</strong> ตอบคำถามท้ายบทเรียนให้ครบทั้ง ${totalQ} ข้อ (เกณฑ์ผ่าน <strong>${minPass} จาก ${totalQ} คะแนน</strong> หรือ 60%)</span>
             </div>`;
         }
       }
@@ -7844,10 +7843,10 @@ __buf.getvalue()`);
         if (msgDiv) {
           msgDiv.innerHTML = r.passed
             ? `<div class="toast-msg" style="background: var(--status-success-bg); color: var(--status-success); border: 1px solid rgba(16, 185, 129, 0.3);">
-                 <i class='bx bx-party'></i> <strong>ยอดเยี่ยมมาก!</strong> คุณสอบผ่านแบบทดสอบประจำบทแล้ว (${scoreVal}/${totalQ} คะแนน • ${pctVal}%)
+                 <i class='bx bx-party'></i> <strong>ยอดเยี่ยมมาก!</strong> คุณสอบผ่านแบบทดสอบท้ายบทเรียนแล้ว (${scoreVal}/${totalQ} คะแนน • ${pctVal}%)
                </div>`
             : `<div class="toast-msg toast-danger">
-                 <i class='bx bx-error-circle'></i> ยังไม่ผ่านเกณฑ์ 60% (ได้ ${scoreVal}/${totalQ} คะแนน คิดเป็น ${pctVal}%) กรุณาทบทวนเนื้อหาบทเรียนด้านล่างแล้วลองทำแบบทดสอบอีกครั้ง
+                 <i class='bx bx-error-circle'></i> ยังไม่ผ่านเกณฑ์ 60% (ได้ ${scoreVal}/${totalQ} คะแนน คิดเป็น ${pctVal}%) กรุณาทบทวนเนื้อหาด้านบนแล้วลองทำแบบทดสอบอีกครั้ง
                </div>`;
         }
 
