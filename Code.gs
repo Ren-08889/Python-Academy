@@ -1331,103 +1331,148 @@ function adminUploadVideoFile(token, payload) {
 
 
 // =========================================================
-// CODING CHALLENGES: 5 fresh analytical tasks per lesson (no hints, no starter code, no lesson example overlap)
+// CODING CHALLENGES: 5 fresh analytical tasks per lesson with strict multi-case verification
 // =========================================================
 const CODING_TASKS = {
   ifelse: [
     {
       title: "ตรวจสอบน้ำหนักกระเป๋าเดินทาง",
       prompt: "สายการบินกำหนดน้ำหนักกระเป๋าถือขึ้นเครื่องได้ไม่เกิน 7 กิโลกรัม จงวิเคราะห์เงื่อนไขและเขียนโปรแกรมรับค่าน้ำหนักกระเป๋า (รองรับทศนิยม) จากผู้ใช้ เพื่อแสดงผลลัพธ์ว่า 'น้ำหนักผ่านเกณฑ์' หรือ 'น้ำหนักเกินกำหนด'",
-      expected: ["น้ำหนักผ่านเกณฑ์", "น้ำหนักเกินกำหนด"],
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: ["5.5"], expected: "น้ำหนักผ่านเกณฑ์" },
+        { inputs: ["7"], expected: "น้ำหนักผ่านเกณฑ์" },
+        { inputs: ["8.5"], expected: "น้ำหนักเกินกำหนด" }
+      ]
     },
     {
       title: "คำนวณค่าบริการจัดส่งพัสดุ",
       prompt: "บริษัทขนส่งคิดค่าบริการตามน้ำหนักพัสดุดังนี้: น้ำหนักมากกว่า 10 กิโลกรัม ค่าส่ง 120 บาท, น้ำหนักมากกว่า 5 ถึง 10 กิโลกรัม ค่าส่ง 80 บาท และไม่เกิน 5 กิโลกรัม ค่าส่ง 45 บาท จงเขียนโปรแกรมรับค่าน้ำหนักพัสดุแล้วแสดงผลลัพธ์เป็น 'ค่าส่ง 120 บาท', 'ค่าส่ง 80 บาท' หรือ 'ค่าส่ง 45 บาท'",
-      expected: ["ค่าส่ง 120 บาท", "ค่าส่ง 80 บาท", "ค่าส่ง 45 บาท"],
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: ["3"], expected: "ค่าส่ง 45 บาท" },
+        { inputs: ["8"], expected: "ค่าส่ง 80 บาท" },
+        { inputs: ["12"], expected: "ค่าส่ง 120 บาท" }
+      ]
     },
     {
       title: "ตรวจสอบพหุคูณร่วมของ 3 และ 5",
       prompt: "จงวิเคราะห์และเขียนโปรแกรมรับจำนวนเต็ม 1 ค่าจากผู้ใช้ เพื่อตรวจสอบว่าตัวเลขนั้นหารด้วยทั้ง 3 และ 5 ลงตัวพร้อมกันหรือไม่ หากเข้าเงื่อนไขให้แสดง 'หารด้วย 3 และ 5 ลงตัว' มิฉะนั้นให้แสดง 'ไม่เข้าเงื่อนไข'",
-      expected: ["หารด้วย 3 และ 5 ลงตัว", "ไม่เข้าเงื่อนไข"],
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: ["15"], expected: "หารด้วย 3 และ 5 ลงตัว" },
+        { inputs: ["9"], expected: "ไม่เข้าเงื่อนไข" },
+        { inputs: ["10"], expected: "ไม่เข้าเงื่อนไข" }
+      ]
     },
     {
       title: "ตรวจสอบสิทธิ์ส่วนลดตั๋วภาพยนตร์",
       prompt: "โรงภาพยนตร์มอบส่วนลดพิเศษให้ผู้ชมที่มีสถานะสมาชิกเป็น 'VIP' หรือซื้อตั๋วตั้งแต่ 4 ใบขึ้นไป (อย่างใดอย่างหนึ่ง) จงเขียนโปรแกรมรับข้อมูลสถานะสมาชิก (ข้อความ) และจำนวนตั๋ว (จำนวนเต็ม) ตามลำดับ เพื่อแสดงผลว่า 'ได้รับส่วนลดพิเศษ' หรือ 'ชำระราคาปกติ'",
-      expected: ["ได้รับส่วนลดพิเศษ", "ชำระราคาปกติ"],
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: ["VIP", "1"], expected: "ได้รับส่วนลดพิเศษ" },
+        { inputs: ["NORMAL", "4"], expected: "ได้รับส่วนลดพิเศษ" },
+        { inputs: ["NORMAL", "2"], expected: "ชำระราคาปกติ" }
+      ]
     },
     {
       title: "คิดค่าธรรมเนียมลานจอดรถ",
       prompt: "ลานจอดรถคิดค่าบริการตามจำนวนชั่วโมงดังนี้: จอดไม่เกิน 2 ชั่วโมง 'จอดฟรี', จอด 3 ถึง 5 ชั่วโมง 'ค่าจอด 50 บาท' และจอดเกิน 5 ชั่วโมง 'ค่าจอด 100 บาท' จงเขียนโปรแกรมรับจำนวนชั่วโมง (จำนวนเต็ม) แล้วแสดงอัตราค่าจอดที่ถูกต้อง",
-      expected: ["จอดฟรี", "ค่าจอด 50 บาท", "ค่าจอด 100 บาท"],
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: ["2"], expected: "จอดฟรี" },
+        { inputs: ["4"], expected: "ค่าจอด 50 บาท" },
+        { inputs: ["6"], expected: "ค่าจอด 100 บาท" }
+      ]
     }
   ],
   for: [
     {
       title: "แสดงเลขคี่ระหว่าง 1 ถึง 15",
       prompt: "จงวิเคราะห์และเขียนโปรแกรมแสดงเฉพาะตัวเลขคี่ทั้งหมดที่มีค่าตั้งแต่ 1 ถึง 15 ออกมาทีละบรรทัด",
-      expected: "1\n3\n5\n7\n9\n11\n13\n15",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: [], expected: "1\n3\n5\n7\n9\n11\n13\n15" }
+      ]
     },
     {
       title: "หาผลคูณต่อเนื่อง (Factorial)",
       prompt: "ผลคูณต่อเนื่องของจำนวนเต็มตั้งแต่ 1 ถึง N เรียกว่าค่า Factorial จงเขียนโปรแกรมรับจำนวนเต็มบวก N จากผู้ใช้ แล้วคำนวณแสดงผลลัพธ์ในรูปแบบ 'ผลคูณ = <ค่าที่ได้>'",
-      expected: "__FACTORIAL__",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: ["4"], expected: "ผลคูณ = 24" },
+        { inputs: ["5"], expected: "ผลคูณ = 120" }
+      ]
     },
     {
       title: "นับจำนวนสินค้าที่มีราคาเกินเกณฑ์",
       prompt: "ร้านค้ามีรายการราคาสินค้า 5 ชิ้น ได้แก่ 120, 450, 80, 620 และ 300 บาท จงเขียนโปรแกรมตรวจสอบและนับจำนวนสินค้าที่มีราคาเกิน 250 บาท แล้วแสดงผลในรูปแบบ 'สินค้าเกินเกณฑ์ = <จำนวน> ชิ้น'",
-      expected: "สินค้าเกินเกณฑ์ = 3 ชิ้น",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: [], expected: "สินค้าเกินเกณฑ์ = 3 ชิ้น" }
+      ]
     },
     {
       title: "แสดงเลขคู่แบบนับถอยหลัง",
       prompt: "จงเขียนโปรแกรมแสดงลำดับตัวเลขคู่แบบนับถอยหลังตั้งแต่ 10 ลงมาจนถึง 2 ออกมาทีละบรรทัด",
-      expected: "10\n8\n6\n4\n2",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: [], expected: "10\n8\n6\n4\n2" }
+      ]
     },
     {
       title: "รวมยอดขายเฉพาะรายการที่เกิน 100",
       prompt: "มียอดสั่งซื้อ 5 รายการ ได้แก่ 85, 150, 220, 90 และ 310 บาท จงเขียนโปรแกรมคำนวณหาผลรวมเฉพาะรายการที่มียอดมากกว่า 100 บาท แล้วแสดงผลลัพธ์ในรูปแบบ 'ยอดรวม = <ผลลัพธ์>'",
-      expected: "ยอดรวม = 680",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: [], expected: "ยอดรวม = 680" }
+      ]
     }
   ],
   while: [
     {
       title: "คำนวณระยะเวลาเพิ่มจำนวนแบบทวีคูณ",
       prompt: "เริ่มต้นมีแบคทีเรียจำนวน 2 เซลล์ และเพิ่มจำนวนเป็น 2 เท่าในทุก ๆ ชั่วโมง จงเขียนโปรแกรมคำนวณหาว่าต้องใช้เวลากี่ชั่วโมงจำนวนจึงจะมีค่าอย่างน้อย 64 เซลล์ แล้วแสดงผลในรูปแบบ 'ใช้เวลา = <จำนวนชั่วโมง> ชั่วโมง'",
-      expected: "ใช้เวลา = 5 ชั่วโมง",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: [], expected: "ใช้เวลา = 5 ชั่วโมง" }
+      ]
     },
     {
       title: "ระบบออมเงินสะสมจนครบเป้าหมาย",
       prompt: "ระบบออมเงินจะรับจำนวนเงินฝาก (จำนวนเต็ม) จากผู้ใช้ทีละครั้งแล้วบวกสะสมไปเรื่อย ๆ จนกว่ายอดสะสมรวมจะถึงหรือเกิน 500 บาท จึงหยุดการทำงานและแสดงข้อความ 'ออมเงินครบเป้าหมายแล้ว'",
-      expected: ["ออมเงินครบเป้าหมายแล้ว"],
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: ["150"], expected: "__NOT_CONTAINS__:ออมเงินครบเป้าหมายแล้ว" },
+        { inputs: ["200", "300"], expected: "ออมเงินครบเป้าหมายแล้ว" },
+        { inputs: ["150", "150", "250"], expected: "ออมเงินครบเป้าหมายแล้ว" }
+      ]
     },
     {
       title: "แสดงพหุคูณของ 7 ไม่เกิน 50",
       prompt: "จงวิเคราะห์และเขียนโปรแกรมแสดงตัวเลขที่เป็นพหุคูณของ 7 ตั้งแต่ 7 จนถึงตัวสุดท้ายที่ไม่เกิน 50 ออกมาทีละบรรทัด",
-      expected: "7\n14\n21\n28\n35\n42\n49",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: [], expected: "7\n14\n21\n28\n35\n42\n49" }
+      ]
     },
     {
       title: "นับจำนวนหลักของเลขจำนวนเต็ม",
       prompt: "จงเขียนโปรแกรมรับตัวเลขจำนวนเต็มบวก 1 ค่าจากผู้ใช้ แล้วคำนวณหาว่าตัวเลขนั้นมีทั้งหมดกี่หลัก จากนั้นแสดงผลในรูปแบบ 'จำนวนหลัก = <ผลลัพธ์>'",
-      expected: "__DIGIT_COUNT__",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: ["7"], expected: "จำนวนหลัก = 1" },
+        { inputs: ["2026"], expected: "จำนวนหลัก = 4" },
+        { inputs: ["98765"], expected: "จำนวนหลัก = 5" }
+      ]
     },
     {
       title: "คำนวณจำนวนรอบการทำงานก่อนพลังงานหมด",
       prompt: "หุ่นยนต์มีพลังงานเริ่มต้น 85 หน่วย การทำงานแต่ละรอบใช้พลังงานรอบละ 20 หน่วย และจะทำงานต่อเฉพาะเมื่อมีพลังงานเหลืออย่างน้อย 20 หน่วย จงเขียนโปรแกรมคำนวณหาจำนวนรอบที่ทำงานได้ทั้งหมด แล้วแสดงผลในรูปแบบ 'ทำงานได้ = <จำนวนรอบ> รอบ'",
-      expected: "ทำงานได้ = 4 รอบ",
-      points: 2
+      points: 2,
+      testCases: [
+        { inputs: [], expected: "ทำงานได้ = 4 รอบ" }
+      ]
     }
   ]
 };
@@ -1467,6 +1512,7 @@ function getCodingChallenges(token, lessonKey) {
       title: t.title,
       prompt: t.prompt,
       points: t.points,
+      testInputs: (t.testCases || []).map(tc => tc.inputs || []),
       completed: !!completed[i + 1],
       score: completed[i + 1]?.score || 0,
       submittedCode: completed[i + 1]?.code || ""
@@ -1478,42 +1524,23 @@ function getCodingChallenges(token, lessonKey) {
   };
 }
 
-function validateDynamicChallengeOutput_(expected, output) {
-  const clean = String(output || "").trim();
-  if (expected === "__FACTORIAL__") {
-    const m = clean.match(/^ผลคูณ\s*=\s*(\d+)$/);
-    if (!m) return false;
-    const val = Number(m[1]);
-    if (val < 1) return false;
-    let fact = 1;
-    for (let k = 1; k <= 15; k++) {
-      fact *= k;
-      if (fact === val) return true;
-      if (fact > val) return false;
-    }
-    return false;
+function matchChallengeCaseOutput_(actualOutput, expectedSpec) {
+  const norm = s => String(s || "").replace(/\r/g, "").replace(/\s*=\s*/g, " = ").trim();
+  const cleanActual = norm(actualOutput);
+  const spec = norm(expectedSpec);
+  if (spec.indexOf("__NOT_CONTAINS__:") === 0) {
+    const forbidden = spec.slice("__NOT_CONTAINS__:".length).trim();
+    return cleanActual.indexOf("__PY_ERROR__") === 0 || !cleanActual.includes(forbidden);
   }
-  if (expected === "__DIGIT_COUNT__") {
-    return /^จำนวนหลัก\s*=\s*[1-9]\d*$/.test(clean);
+  if (cleanActual.indexOf("__PY_ERROR__") === 0) return false;
+  if (spec.indexOf("\n") !== -1) {
+    return cleanActual === spec;
   }
-  const lines = clean.split(/\n+/).map(s => s.trim()).filter(Boolean);
-  if (expected === "__SEQ_1_TO_N__") {
-    return lines.length >= 2 && lines.every((v, idx) => /^\d+$/.test(v) && Number(v) === idx + 1);
-  }
-  if (expected === "__MULT_TABLE_5__") {
-    if (lines.length !== 5) return false;
-    const firstMatch = lines[0].match(/^(-?\d+)\s*[xX*×]\s*1\s*=\s*(-?\d+)$/);
-    if (!firstMatch) return false;
-    const n = Number(firstMatch[1]);
-    return lines.every((line, idx) => {
-      const m = line.match(/^(-?\d+)\s*[xX*×]\s*(\d+)\s*=\s*(-?\d+)$/);
-      return !!m && Number(m[1]) === n && Number(m[2]) === idx + 1 && Number(m[3]) === n * (idx + 1);
-    });
-  }
-  return false;
+  const lines = cleanActual.split(/\n+/).map(s => s.trim()).filter(Boolean);
+  return cleanActual === spec || lines.some(line => line === spec) || cleanActual.includes(spec);
 }
 
-function submitCodingChallenge(token, lessonKey, challengeNo, code, output) {
+function submitCodingChallenge(token, lessonKey, challengeNo, code, output, caseOutputs) {
   const profile = getMyProfile(token);
   if (!profile.success) return profile;
   const tasks = CODING_TASKS[lessonKey];
@@ -1530,24 +1557,34 @@ function submitCodingChallenge(token, lessonKey, challengeNo, code, output) {
   code = String(code || ""); output = String(output || "").replace(/\r/g,"").trim();
   if (code.length < 5 || code.length > 10000) return {success:false,message:"กรุณาเขียนโค้ดให้ครบก่อนส่งตรวจ"};
 
-  const requiredKeyword = ({ ifelse: /\bif\b/, for: /\bfor\b/, while: /\bwhile\b/ })[lessonKey];
-  if (requiredKeyword && !requiredKeyword.test(code)) {
-    const hintMsg = lessonKey === "ifelse" ? "กรุณาใช้คำสั่งเงื่อนไข (if) ในการแก้โจทย์ข้อนี้" : lessonKey === "for" ? "กรุณาใช้คำสั่งวนซ้ำ (for) ในการแก้โจทย์ข้อนี้" : "กรุณาใช้คำสั่งวนซ้ำ (while) ในการแก้โจทย์ข้อนี้";
-    return { success: true, passed: false, score: 0, points: tasks[n - 1].points, passedCount: 0, message: hintMsg };
-  }
+  // เปิดกว้างวิธีเขียนโค้ด (while / for / if-elif / ฟังก์ชันใดก็ได้) ขอเพียงรันผ่านและผลลัพธ์ตรงตามเงื่อนไขทุกกรณีทดสอบ
+  const task = tasks[n - 1];
+  let failReason = "";
+  let passed = true;
 
-  const expected = tasks[n - 1].expected;
-  let passed = false;
-  if (typeof expected === "string" && expected.indexOf("__") === 0) {
-    passed = validateDynamicChallengeOutput_(expected, output);
-  } else if (Array.isArray(expected)) {
-    passed = expected.some(exp => {
-      const e = String(exp).trim();
-      return output === e || output.includes(e);
-    });
-  } else {
-    const e = String(expected).trim();
-    passed = (output === e) || output.includes(e);
+  const testCases = task.testCases || [];
+  let passedCases = 0;
+  if (testCases.length > 0) {
+    if (testCases.length === 1 && (!testCases[0].inputs || testCases[0].inputs.length === 0)) {
+      const actual = (Array.isArray(caseOutputs) && caseOutputs.length >= 1) ? caseOutputs[0] : output;
+      if (matchChallengeCaseOutput_(actual, testCases[0].expected)) {
+        passedCases = 1;
+      } else {
+        passed = false;
+        failReason = "ผลลัพธ์ยังไม่ถูกต้องตามโจทย์ ลองวิเคราะห์เงื่อนไขและรูปแบบข้อความที่แสดงอีกครั้ง";
+      }
+    } else if (!Array.isArray(caseOutputs) || caseOutputs.length !== testCases.length) {
+      passed = false;
+      failReason = "ไม่พบผลการทดสอบครบทุกกรณี กรุณากด Run และส่งตรวจใหม่อีกครั้ง";
+    } else {
+      for (let i = 0; i < testCases.length; i++) {
+        if (matchChallengeCaseOutput_(caseOutputs[i], testCases[i].expected)) passedCases++;
+      }
+      if (passedCases < testCases.length) {
+        passed = false;
+        failReason = "โค้ดยังทำงานไม่ถูกต้องครบทุกกรณีทดสอบ (ผ่าน " + passedCases + " จาก " + testCases.length + " กรณี) กรุณาตรวจสอบเงื่อนไขและค่าขอบเขตอีกครั้ง";
+      }
+    }
   }
 
   const score = passed ? tasks[n - 1].points : 0;
@@ -1591,7 +1628,9 @@ function submitCodingChallenge(token, lessonKey, challengeNo, code, output) {
     lessonTotal,
     unlockedQuiz: passedCount === tasks.length,
     unlockedNext: passedCount === tasks.length,
-    message: finalPassed ? (passedCount === tasks.length ? "ผ่านครบทั้ง 5 ข้อแล้ว! ปลดล็อกแบบทดสอบท้ายบทเรียน (15 ข้อ) เรียบร้อย" : "รันผ่านแล้ว! ไปทำข้อถัดไปได้เลย") : "ผลลัพธ์ยังไม่ตรงกับโจทย์ ลองวิเคราะห์เงื่อนไขและตรวจโค้ดแล้วรันอีกครั้ง"
+    message: !finalPassed
+      ? (failReason || "ผลลัพธ์ยังไม่ตรงกับโจทย์ ลองวิเคราะห์เงื่อนไขและตรวจโค้ดแล้วรันอีกครั้ง")
+      : (passedCount === tasks.length ? "ผ่านครบทั้ง 5 ข้อแล้ว! ปลดล็อกแบบทดสอบท้ายบทเรียน (15 ข้อ) เรียบร้อย" : "รันผ่านแล้ว! ไปทำข้อถัดไปได้เลย")
   };
 }
 

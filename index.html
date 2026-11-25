@@ -5108,25 +5108,25 @@
             const pSet = window._mockPassedTasks[lKey];
             const taskBank = {
               ifelse: [
-                { index: 1, title: "ตรวจสอบน้ำหนักกระเป๋าเดินทาง", prompt: "สายการบินกำหนดน้ำหนักกระเป๋าถือขึ้นเครื่องได้ไม่เกิน 7 กิโลกรัม จงวิเคราะห์เงื่อนไขและเขียนโปรแกรมรับค่าน้ำหนักกระเป๋า (รองรับทศนิยม) จากผู้ใช้ เพื่อแสดงผลลัพธ์ว่า 'น้ำหนักผ่านเกณฑ์' หรือ 'น้ำหนักเกินกำหนด'", points: 2 },
-                { index: 2, title: "คำนวณค่าบริการจัดส่งพัสดุ", prompt: "บริษัทขนส่งคิดค่าบริการตามน้ำหนักพัสดุดังนี้: น้ำหนักมากกว่า 10 กิโลกรัม ค่าส่ง 120 บาท, น้ำหนักมากกว่า 5 ถึง 10 กิโลกรัม ค่าส่ง 80 บาท และไม่เกิน 5 กิโลกรัม ค่าส่ง 45 บาท จงเขียนโปรแกรมรับค่าน้ำหนักพัสดุแล้วแสดงผลลัพธ์เป็น 'ค่าส่ง 120 บาท', 'ค่าส่ง 80 บาท' หรือ 'ค่าส่ง 45 บาท'", points: 2 },
-                { index: 3, title: "ตรวจสอบพหุคูณร่วมของ 3 และ 5", prompt: "จงวิเคราะห์และเขียนโปรแกรมรับจำนวนเต็ม 1 ค่าจากผู้ใช้ เพื่อตรวจสอบว่าตัวเลขนั้นหารด้วยทั้ง 3 และ 5 ลงตัวพร้อมกันหรือไม่ หากเข้าเงื่อนไขให้แสดง 'หารด้วย 3 และ 5 ลงตัว' มิฉะนั้นให้แสดง 'ไม่เข้าเงื่อนไข'", points: 2 },
-                { index: 4, title: "ตรวจสอบสิทธิ์ส่วนลดตั๋วภาพยนตร์", prompt: "โรงภาพยนตร์มอบส่วนลดพิเศษให้ผู้ชมที่มีสถานะสมาชิกเป็น 'VIP' หรือซื้อตั๋วตั้งแต่ 4 ใบขึ้นไป (อย่างใดอย่างหนึ่ง) จงเขียนโปรแกรมรับข้อมูลสถานะสมาชิก (ข้อความ) และจำนวนตั๋ว (จำนวนเต็ม) ตามลำดับ เพื่อแสดงผลว่า 'ได้รับส่วนลดพิเศษ' หรือ 'ชำระราคาปกติ'", points: 2 },
-                { index: 5, title: "คิดค่าธรรมเนียมลานจอดรถ", prompt: "ลานจอดรถคิดค่าบริการตามจำนวนชั่วโมงดังนี้: จอดไม่เกิน 2 ชั่วโมง 'จอดฟรี', จอด 3 ถึง 5 ชั่วโมง 'ค่าจอด 50 บาท' และจอดเกิน 5 ชั่วโมง 'ค่าจอด 100 บาท' จงเขียนโปรแกรมรับจำนวนชั่วโมง (จำนวนเต็ม) แล้วแสดงอัตราค่าจอดที่ถูกต้อง", points: 2 }
+                { index: 1, title: "ตรวจสอบน้ำหนักกระเป๋าเดินทาง", prompt: "สายการบินกำหนดน้ำหนักกระเป๋าถือขึ้นเครื่องได้ไม่เกิน 7 กิโลกรัม จงวิเคราะห์เงื่อนไขและเขียนโปรแกรมรับค่าน้ำหนักกระเป๋า (รองรับทศนิยม) จากผู้ใช้ เพื่อแสดงผลลัพธ์ว่า 'น้ำหนักผ่านเกณฑ์' หรือ 'น้ำหนักเกินกำหนด'", points: 2, testInputs: [["5.5"], ["7"], ["8.5"]] },
+                { index: 2, title: "คำนวณค่าบริการจัดส่งพัสดุ", prompt: "บริษัทขนส่งคิดค่าบริการตามน้ำหนักพัสดุดังนี้: น้ำหนักมากกว่า 10 กิโลกรัม ค่าส่ง 120 บาท, น้ำหนักมากกว่า 5 ถึง 10 กิโลกรัม ค่าส่ง 80 บาท และไม่เกิน 5 กิโลกรัม ค่าส่ง 45 บาท จงเขียนโปรแกรมรับค่าน้ำหนักพัสดุแล้วแสดงผลลัพธ์เป็น 'ค่าส่ง 120 บาท', 'ค่าส่ง 80 บาท' หรือ 'ค่าส่ง 45 บาท'", points: 2, testInputs: [["3"], ["8"], ["12"]] },
+                { index: 3, title: "ตรวจสอบพหุคูณร่วมของ 3 และ 5", prompt: "จงวิเคราะห์และเขียนโปรแกรมรับจำนวนเต็ม 1 ค่าจากผู้ใช้ เพื่อตรวจสอบว่าตัวเลขนั้นหารด้วยทั้ง 3 และ 5 ลงตัวพร้อมกันหรือไม่ หากเข้าเงื่อนไขให้แสดง 'หารด้วย 3 และ 5 ลงตัว' มิฉะนั้นให้แสดง 'ไม่เข้าเงื่อนไข'", points: 2, testInputs: [["15"], ["9"], ["10"]] },
+                { index: 4, title: "ตรวจสอบสิทธิ์ส่วนลดตั๋วภาพยนตร์", prompt: "โรงภาพยนตร์มอบส่วนลดพิเศษให้ผู้ชมที่มีสถานะสมาชิกเป็น 'VIP' หรือซื้อตั๋วตั้งแต่ 4 ใบขึ้นไป (อย่างใดอย่างหนึ่ง) จงเขียนโปรแกรมรับข้อมูลสถานะสมาชิก (ข้อความ) และจำนวนตั๋ว (จำนวนเต็ม) ตามลำดับ เพื่อแสดงผลว่า 'ได้รับส่วนลดพิเศษ' หรือ 'ชำระราคาปกติ'", points: 2, testInputs: [["VIP", "1"], ["NORMAL", "4"], ["NORMAL", "2"]] },
+                { index: 5, title: "คิดค่าธรรมเนียมลานจอดรถ", prompt: "ลานจอดรถคิดค่าบริการตามจำนวนชั่วโมงดังนี้: จอดไม่เกิน 2 ชั่วโมง 'จอดฟรี', จอด 3 ถึง 5 ชั่วโมง 'ค่าจอด 50 บาท' และจอดเกิน 5 ชั่วโมง 'ค่าจอด 100 บาท' จงเขียนโปรแกรมรับจำนวนชั่วโมง (จำนวนเต็ม) แล้วแสดงอัตราค่าจอดที่ถูกต้อง", points: 2, testInputs: [["2"], ["4"], ["6"]] }
               ],
               for: [
-                { index: 1, title: "แสดงเลขคี่ระหว่าง 1 ถึง 15", prompt: "จงวิเคราะห์และเขียนโปรแกรมแสดงเฉพาะตัวเลขคี่ทั้งหมดที่มีค่าตั้งแต่ 1 ถึง 15 ออกมาทีละบรรทัด", points: 2 },
-                { index: 2, title: "หาผลคูณต่อเนื่อง (Factorial)", prompt: "ผลคูณต่อเนื่องของจำนวนเต็มตั้งแต่ 1 ถึง N เรียกว่าค่า Factorial จงเขียนโปรแกรมรับจำนวนเต็มบวก N จากผู้ใช้ แล้วคำนวณแสดงผลลัพธ์ในรูปแบบ 'ผลคูณ = <ค่าที่ได้>'", points: 2 },
-                { index: 3, title: "นับจำนวนสินค้าที่มีราคาเกินเกณฑ์", prompt: "ร้านค้ามีรายการราคาสินค้า 5 ชิ้น ได้แก่ 120, 450, 80, 620 และ 300 บาท จงเขียนโปรแกรมตรวจสอบและนับจำนวนสินค้าที่มีราคาเกิน 250 บาท แล้วแสดงผลในรูปแบบ 'สินค้าเกินเกณฑ์ = <จำนวน> ชิ้น'", points: 2 },
-                { index: 4, title: "แสดงเลขคู่แบบนับถอยหลัง", prompt: "จงเขียนโปรแกรมแสดงลำดับตัวเลขคู่แบบนับถอยหลังตั้งแต่ 10 ลงมาจนถึง 2 ออกมาทีละบรรทัด", points: 2 },
-                { index: 5, title: "รวมยอดขายเฉพาะรายการที่เกิน 100", prompt: "มียอดสั่งซื้อ 5 รายการ ได้แก่ 85, 150, 220, 90 และ 310 บาท จงเขียนโปรแกรมคำนวณหาผลรวมเฉพาะรายการที่มียอดมากกว่า 100 บาท แล้วแสดงผลลัพธ์ในรูปแบบ 'ยอดรวม = <ผลลัพธ์>'", points: 2 }
+                { index: 1, title: "แสดงเลขคี่ระหว่าง 1 ถึง 15", prompt: "จงวิเคราะห์และเขียนโปรแกรมแสดงเฉพาะตัวเลขคี่ทั้งหมดที่มีค่าตั้งแต่ 1 ถึง 15 ออกมาทีละบรรทัด", points: 2, testInputs: [[]] },
+                { index: 2, title: "หาผลคูณต่อเนื่อง (Factorial)", prompt: "ผลคูณต่อเนื่องของจำนวนเต็มตั้งแต่ 1 ถึง N เรียกว่าค่า Factorial จงเขียนโปรแกรมรับจำนวนเต็มบวก N จากผู้ใช้ แล้วคำนวณแสดงผลลัพธ์ในรูปแบบ 'ผลคูณ = <ค่าที่ได้>'", points: 2, testInputs: [["4"], ["5"]] },
+                { index: 3, title: "นับจำนวนสินค้าที่มีราคาเกินเกณฑ์", prompt: "ร้านค้ามีรายการราคาสินค้า 5 ชิ้น ได้แก่ 120, 450, 80, 620 และ 300 บาท จงเขียนโปรแกรมตรวจสอบและนับจำนวนสินค้าที่มีราคาเกิน 250 บาท แล้วแสดงผลในรูปแบบ 'สินค้าเกินเกณฑ์ = <จำนวน> ชิ้น'", points: 2, testInputs: [[]] },
+                { index: 4, title: "แสดงเลขคู่แบบนับถอยหลัง", prompt: "จงเขียนโปรแกรมแสดงลำดับตัวเลขคู่แบบนับถอยหลังตั้งแต่ 10 ลงมาจนถึง 2 ออกมาทีละบรรทัด", points: 2, testInputs: [[]] },
+                { index: 5, title: "รวมยอดขายเฉพาะรายการที่เกิน 100", prompt: "มียอดสั่งซื้อ 5 รายการ ได้แก่ 85, 150, 220, 90 และ 310 บาท จงเขียนโปรแกรมคำนวณหาผลรวมเฉพาะรายการที่มียอดมากกว่า 100 บาท แล้วแสดงผลลัพธ์ในรูปแบบ 'ยอดรวม = <ผลลัพธ์>'", points: 2, testInputs: [[]] }
               ],
               while: [
-                { index: 1, title: "คำนวณระยะเวลาเพิ่มจำนวนแบบทวีคูณ", prompt: "เริ่มต้นมีแบคทีเรียจำนวน 2 เซลล์ และเพิ่มจำนวนเป็น 2 เท่าในทุก ๆ ชั่วโมง จงเขียนโปรแกรมคำนวณหาว่าต้องใช้เวลากี่ชั่วโมงจำนวนจึงจะมีค่าอย่างน้อย 64 เซลล์ แล้วแสดงผลในรูปแบบ 'ใช้เวลา = <จำนวนชั่วโมง> ชั่วโมง'", points: 2 },
-                { index: 2, title: "ระบบออมเงินสะสมจนครบเป้าหมาย", prompt: "ระบบออมเงินจะรับจำนวนเงินฝาก (จำนวนเต็ม) จากผู้ใช้ทีละครั้งแล้วบวกสะสมไปเรื่อย ๆ จนกว่ายอดสะสมรวมจะถึงหรือเกิน 500 บาท จึงหยุดการทำงานและแสดงข้อความ 'ออมเงินครบเป้าหมายแล้ว'", points: 2 },
-                { index: 3, title: "แสดงพหุคูณของ 7 ไม่เกิน 50", prompt: "จงวิเคราะห์และเขียนโปรแกรมแสดงตัวเลขที่เป็นพหุคูณของ 7 ตั้งแต่ 7 จนถึงตัวสุดท้ายที่ไม่เกิน 50 ออกมาทีละบรรทัด", points: 2 },
-                { index: 4, title: "นับจำนวนหลักของเลขจำนวนเต็ม", prompt: "จงเขียนโปรแกรมรับตัวเลขจำนวนเต็มบวก 1 ค่าจากผู้ใช้ แล้วคำนวณหาว่าตัวเลขนั้นมีทั้งหมดกี่หลัก จากนั้นแสดงผลในรูปแบบ 'จำนวนหลัก = <ผลลัพธ์>'", points: 2 },
-                { index: 5, title: "คำนวณจำนวนรอบการทำงานก่อนพลังงานหมด", prompt: "หุ่นยนต์มีพลังงานเริ่มต้น 85 หน่วย การทำงานแต่ละรอบใช้พลังงานรอบละ 20 หน่วย และจะทำงานต่อเฉพาะเมื่อมีพลังงานเหลืออย่างน้อย 20 หน่วย จงเขียนโปรแกรมคำนวณหาจำนวนรอบที่ทำงานได้ทั้งหมด แล้วแสดงผลในรูปแบบ 'ทำงานได้ = <จำนวนรอบ> รอบ'", points: 2 }
+                { index: 1, title: "คำนวณระยะเวลาเพิ่มจำนวนแบบทวีคูณ", prompt: "เริ่มต้นมีแบคทีเรียจำนวน 2 เซลล์ และเพิ่มจำนวนเป็น 2 เท่าในทุก ๆ ชั่วโมง จงเขียนโปรแกรมคำนวณหาว่าต้องใช้เวลากี่ชั่วโมงจำนวนจึงจะมีค่าอย่างน้อย 64 เซลล์ แล้วแสดงผลในรูปแบบ 'ใช้เวลา = <จำนวนชั่วโมง> ชั่วโมง'", points: 2, testInputs: [[]] },
+                { index: 2, title: "ระบบออมเงินสะสมจนครบเป้าหมาย", prompt: "ระบบออมเงินจะรับจำนวนเงินฝาก (จำนวนเต็ม) จากผู้ใช้ทีละครั้งแล้วบวกสะสมไปเรื่อย ๆ จนกว่ายอดสะสมรวมจะถึงหรือเกิน 500 บาท จึงหยุดการทำงานและแสดงข้อความ 'ออมเงินครบเป้าหมายแล้ว'", points: 2, testInputs: [["150"], ["200", "300"], ["150", "150", "250"]] },
+                { index: 3, title: "แสดงพหุคูณของ 7 ไม่เกิน 50", prompt: "จงวิเคราะห์และเขียนโปรแกรมแสดงตัวเลขที่เป็นพหุคูณของ 7 ตั้งแต่ 7 จนถึงตัวสุดท้ายที่ไม่เกิน 50 ออกมาทีละบรรทัด", points: 2, testInputs: [[]] },
+                { index: 4, title: "นับจำนวนหลักของเลขจำนวนเต็ม", prompt: "จงเขียนโปรแกรมรับตัวเลขจำนวนเต็มบวก 1 ค่าจากผู้ใช้ แล้วคำนวณหาว่าตัวเลขนั้นมีทั้งหมดกี่หลัก จากนั้นแสดงผลในรูปแบบ 'จำนวนหลัก = <ผลลัพธ์>'", points: 2, testInputs: [["7"], ["2026"], ["98765"]] },
+                { index: 5, title: "คำนวณจำนวนรอบการทำงานก่อนพลังงานหมด", prompt: "หุ่นยนต์มีพลังงานเริ่มต้น 85 หน่วย การทำงานแต่ละรอบใช้พลังงานรอบละ 20 หน่วย และจะทำงานต่อเฉพาะเมื่อมีพลังงานเหลืออย่างน้อย 20 หน่วย จงเขียนโปรแกรมคำนวณหาจำนวนรอบที่ทำงานได้ทั้งหมด แล้วแสดงผลในรูปแบบ 'ทำงานได้ = <จำนวนรอบ> รอบ'", points: 2, testInputs: [[]] }
               ]
             };
             const mockTasks = (taskBank[lKey] || taskBank.ifelse).map(t => Object.assign({}, t, { completed: pSet.has(t.index), score: pSet.has(t.index) ? t.points : 0 }));
@@ -5135,21 +5135,80 @@
           } else if (fn === 'submitCodingChallenge' || fn === 'submitChallengeTask') {
             const lKey = (args && args[1]) || 'ifelse';
             const taskNo = Number(args && args[2]) || 1;
+            const code = String((args && args[3]) || '');
+            const output = String((args && args[4]) || '').trim();
+            const caseOutputs = args && args[5];
+            const specs = {
+              ifelse: [
+                { cases: ["น้ำหนักผ่านเกณฑ์", "น้ำหนักผ่านเกณฑ์", "น้ำหนักเกินกำหนด"] },
+                { cases: ["ค่าส่ง 45 บาท", "ค่าส่ง 80 บาท", "ค่าส่ง 120 บาท"] },
+                { cases: ["หารด้วย 3 และ 5 ลงตัว", "ไม่เข้าเงื่อนไข", "ไม่เข้าเงื่อนไข"] },
+                { cases: ["ได้รับส่วนลดพิเศษ", "ได้รับส่วนลดพิเศษ", "ชำระราคาปกติ"] },
+                { cases: ["จอดฟรี", "ค่าจอด 50 บาท", "ค่าจอด 100 บาท"] }
+              ],
+              for: [
+                { cases: ["1\n3\n5\n7\n9\n11\n13\n15"] },
+                { cases: ["ผลคูณ = 24", "ผลคูณ = 120"] },
+                { cases: ["สินค้าเกินเกณฑ์ = 3 ชิ้น"] },
+                { cases: ["10\n8\n6\n4\n2"] },
+                { cases: ["ยอดรวม = 680"] }
+              ],
+              while: [
+                { cases: ["ใช้เวลา = 5 ชั่วโมง"] },
+                { cases: ["__NOT_CONTAINS__:ออมเงินครบเป้าหมายแล้ว", "ออมเงินครบเป้าหมายแล้ว", "ออมเงินครบเป้าหมายแล้ว"] },
+                { cases: ["7\n14\n21\n28\n35\n42\n49"] },
+                { cases: ["จำนวนหลัก = 1", "จำนวนหลัก = 4", "จำนวนหลัก = 5"] },
+                { cases: ["ทำงานได้ = 4 รอบ"] }
+              ]
+            };
+            const rule = (specs[lKey] || [])[taskNo - 1];
+            let passed = !!rule;
+            let failMsg = !rule ? "โจทย์ไม่ถูกต้อง" : "";
+            const normOut = s => String(s || '').replace(/\r/g, '').replace(/\s*=\s*/g, ' = ').trim();
+            const matchOut = (actual, exp) => {
+              const ca = normOut(actual);
+              const es = normOut(exp);
+              if (es.startsWith('__NOT_CONTAINS__:')) {
+                const f = es.slice('__NOT_CONTAINS__:'.length);
+                return ca.startsWith('__PY_ERROR__') || !ca.includes(f);
+              }
+              if (ca.startsWith('__PY_ERROR__')) return false;
+              if (es.includes('\n')) return ca === es;
+              return ca === es || ca.split(/\n+/).map(s => s.trim()).includes(es) || ca.includes(es);
+            };
+            if (passed && rule.cases.length === 1) {
+              const a = Array.isArray(caseOutputs) && caseOutputs.length ? caseOutputs[0] : output;
+              if (!matchOut(a, rule.cases[0])) {
+                passed = false;
+                failMsg = "ผลลัพธ์ยังไม่ถูกต้องตามโจทย์ ลองวิเคราะห์เงื่อนไขและรูปแบบข้อความที่แสดงอีกครั้ง";
+              }
+            } else if (passed) {
+              if (!Array.isArray(caseOutputs) || caseOutputs.length !== rule.cases.length) {
+                passed = false;
+                failMsg = "ไม่พบผลการทดสอบครบทุกกรณี กรุณากด Run และส่งตรวจอีกครั้ง";
+              } else {
+                const okCount = rule.cases.filter((e, i) => matchOut(caseOutputs[i], e)).length;
+                if (okCount < rule.cases.length) {
+                  passed = false;
+                  failMsg = `โค้ดยังทำงานไม่ถูกต้องครบทุกกรณีทดสอบ (ผ่าน ${okCount} จาก ${rule.cases.length} กรณี)`;
+                }
+              }
+            }
             if (!window._mockPassedTasks) window._mockPassedTasks = {};
             if (!window._mockPassedTasks[lKey]) window._mockPassedTasks[lKey] = new Set();
-            window._mockPassedTasks[lKey].add(taskNo);
+            if (passed) window._mockPassedTasks[lKey].add(taskNo);
             const pCount = window._mockPassedTasks[lKey].size;
             ok({
               success: true,
-              passed: true,
-              score: 2,
+              passed: passed,
+              score: passed ? 2 : 0,
               points: 2,
               passedCount: pCount,
               lessonScore: pCount * 2,
               lessonTotal: 10,
               unlockedQuiz: pCount === 5,
               unlockedNext: pCount === 5,
-              message: pCount === 5 ? "ผ่านครบทั้ง 5 ข้อแล้ว! ปลดล็อกแบบทดสอบท้ายบทเรียน (15 ข้อ) เรียบร้อย" : "รันผ่านแล้ว! ไปทำข้อถัดไปได้เลย"
+              message: !passed ? failMsg : (pCount === 5 ? "ผ่านครบทั้ง 5 ข้อแล้ว! ปลดล็อกแบบทดสอบท้ายบทเรียน (15 ข้อ) เรียบร้อย" : "รันผ่านแล้ว! ไปทำข้อถัดไปได้เลย")
             });
           } else if (fn === 'getLessonVideos') {
             ok({ success: true, videos: [] });
@@ -6475,17 +6534,27 @@
       }
       return pyodideLoading;
     }
-    async function runPythonCode(code){
+    async function runPythonCode(code, inputList){
       const py=await getPyodideEngine();
       py.globals.set("__student_code",code);
-      return await py.runPythonAsync(`import sys, io
+      py.globals.set("__input_json", JSON.stringify(Array.isArray(inputList) ? inputList : []));
+      return await py.runPythonAsync(`import sys, io, json, builtins
 __buf = io.StringIO()
-__old = sys.stdout
+__inputs = iter(json.loads(__input_json))
+def __mock_input(prompt=""):
+    try:
+        return str(next(__inputs))
+    except StopIteration:
+        raise EOFError("NEED_MORE_INPUT:" + str(prompt))
+__old_stdout = sys.stdout
+__old_input = builtins.input
 sys.stdout = __buf
+builtins.input = __mock_input
 try:
     exec(compile(__student_code, '<student>', 'exec'), {})
 finally:
-    sys.stdout = __old
+    sys.stdout = __old_stdout
+    builtins.input = __old_input
 __buf.getvalue()`);
     }
     
@@ -6615,7 +6684,7 @@ __buf.getvalue()`);
           btn.id = `challengeSubmitBtn${task.index}`;
           btn.className = task.completed ? "btn btn-secondary" : "btn btn-primary";
           btn.innerHTML = task.completed ? "<i class='bx bx-check-circle'></i> ผ่านแล้ว (ส่งตรวจใหม่ได้)" : "<i class='bx bx-play'></i> Run และส่งตรวจ";
-          btn.onclick = () => runAndSubmitChallenge(type, task.index, task.points, btn, task.defaultInputs);
+          btn.onclick = () => runAndSubmitChallenge(type, task.index, task.points, btn, task.testInputs);
 
           const resetBtn = document.createElement("button");
           resetBtn.className = "btn btn-ghost";
@@ -6711,7 +6780,218 @@ __buf.getvalue()`);
       else launchArenaChallenges();
     }
 
-    async function runAndSubmitChallenge(type, no, points, btn, defaultInputs) {
+    function runMiniPythonInterpreter(code, inputs) {
+      const lines = String(code || "").replace(/\r/g, "").split("\n");
+      const inpQueue = Array.isArray(inputs) ? [...inputs] : [];
+      let inpIdx = 0;
+      const out = [];
+      const env = {};
+
+      const splitArgs = (s) => {
+        const res = [];
+        let cur = "", q = null, depth = 0;
+        for (let i = 0; i < s.length; i++) {
+          const ch = s[i];
+          if (q) { cur += ch; if (ch === q && s[i - 1] !== "\\") q = null; continue; }
+          if (ch === "'" || ch === '"') { q = ch; cur += ch; continue; }
+          if (ch === "(" || ch === "[") depth++;
+          else if (ch === ")" || ch === "]") depth--;
+          if (ch === "," && depth === 0) { res.push(cur.trim()); cur = ""; continue; }
+          cur += ch;
+        }
+        if (cur.trim()) res.push(cur.trim());
+        return res;
+      };
+
+      const pyInput = (prompt = "") => {
+        if (inpIdx >= inpQueue.length) throw new Error("NEED_MORE_INPUT:" + String(prompt || ""));
+        return String(inpQueue[inpIdx++]);
+      };
+      const pyInt = v => { const n = parseInt(v, 10); if (Number.isNaN(n)) throw new Error("ValueError: invalid int"); return n; };
+      const pyFloat = v => { const n = parseFloat(v); if (Number.isNaN(n)) throw new Error("ValueError: invalid float"); return n; };
+      const pyRange = (...a) => {
+        let s = 0, e = 0, st = 1;
+        if (a.length === 1) e = a[0];
+        else if (a.length === 2) { s = a[0]; e = a[1]; }
+        else if (a.length >= 3) { s = a[0]; e = a[1]; st = a[2]; }
+        if (st === 0) throw new Error("ValueError: range step 0");
+        const arr = [];
+        if (st > 0) for (let i = s; i < e; i += st) arr.push(i);
+        else for (let i = s; i > e; i += st) arr.push(i);
+        return arr;
+      };
+
+      const evalExpr = (raw) => {
+        let s = String(raw || "").trim();
+        if (!s) return undefined;
+        let transformed = "";
+        let q = null;
+        for (let i = 0; i < s.length; i++) {
+          const ch = s[i];
+          if (q) { transformed += ch; if (ch === q && s[i - 1] !== "\\") q = null; continue; }
+          if (ch === "'" || ch === '"') { q = ch; transformed += ch; continue; }
+          if (s.slice(i, i + 2) === "//") { transformed += " / "; i++; continue; }
+          transformed += ch;
+        }
+        const jsExpr = transformed
+          .replace(/\bTrue\b/g, "true")
+          .replace(/\bFalse\b/g, "false")
+          .replace(/\bNone\b/g, "null")
+          .replace(/\band\b/g, "&&")
+          .replace(/\bor\b/g, "||")
+          .replace(/\bnot\b/g, "!")
+          .replace(/\binput\s*\(/g, "__pyInput(")
+          .replace(/\bint\s*\(/g, "__pyInt(")
+          .replace(/\bfloat\s*\(/g, "__pyFloat(")
+          .replace(/\bstr\s*\(/g, "String(")
+          .replace(/\blen\s*\(/g, "__pyLen(")
+          .replace(/\babs\s*\(/g, "Math.abs(")
+          .replace(/\bmath\.factorial\s*\(/g, "__pyFact(")
+          .replace(/\brange\s*\(/g, "__pyRange(");
+        const isFloorDiv = s.includes("//") && !/^['"]/.test(s);
+        const pyFact = n => { let r = 1; for (let k = 2; k <= n; k++) r *= k; return r; };
+        const fn = new Function("__env", "__pyInput", "__pyInt", "__pyFloat", "__pyLen", "__pyRange", "__pyFact",
+          `with(__env){ return (${jsExpr}); }`
+        );
+        const val = fn(env, pyInput, pyInt, pyFloat, x => x?.length || 0, pyRange, pyFact);
+        return (isFloorDiv && typeof val === "number") ? Math.trunc(val) : val;
+      };
+
+      const parseBlock = (startIdx, minIndent) => {
+        const block = [];
+        let i = startIdx;
+        while (i < lines.length) {
+          const raw = lines[i].replace(/\t/g, "    ");
+          const trimmed = raw.trim();
+          if (!trimmed || trimmed.startsWith("#")) { i++; continue; }
+          const indent = raw.search(/\S/);
+          if (indent < minIndent) break;
+          if (trimmed.startsWith("if ") || trimmed.startsWith("elif ") || trimmed === "else:" || trimmed.startsWith("else :") || trimmed.startsWith("while ") || trimmed.startsWith("for ")) {
+            const sub = parseBlock(i + 1, indent + 1);
+            block.push({ indent, text: trimmed, body: sub.block });
+            i = sub.nextIdx;
+          } else {
+            block.push({ indent, text: trimmed, body: [] });
+            i++;
+          }
+        }
+        return { block, nextIdx: i };
+      };
+
+      const execBlock = (stmts) => {
+        for (let idx = 0; idx < stmts.length; idx++) {
+          const st = stmts[idx];
+          const t = st.text;
+          if (t === "break") return "BREAK";
+          if (t === "continue") return "CONTINUE";
+          if (t === "pass" || t.startsWith("import ") || t.startsWith("from ")) continue;
+          if (t.startsWith("if ")) {
+            let ran = false;
+            let cur = st;
+            while (true) {
+              const ct = cur.text;
+              if (ct.startsWith("if ") || ct.startsWith("elif ")) {
+                const cond = ct.replace(/^(if|elif)\s+/, "").replace(/:\s*$/, "");
+                if (!ran && evalExpr(cond)) {
+                  ran = true;
+                  const sig = execBlock(cur.body);
+                  if (sig) return sig;
+                }
+              } else if (ct.startsWith("else")) {
+                if (!ran) {
+                  ran = true;
+                  const sig = execBlock(cur.body);
+                  if (sig) return sig;
+                }
+                break;
+              }
+              const nextSt = stmts[idx + 1];
+              if (nextSt && (nextSt.text.startsWith("elif ") || nextSt.text.startsWith("else"))) {
+                idx++;
+                cur = nextSt;
+              } else {
+                break;
+              }
+            }
+          } else if (t.startsWith("while ")) {
+            const cond = t.replace(/^while\s+/, "").replace(/:\s*$/, "");
+            let guard = 0;
+            while (evalExpr(cond)) {
+              if (++guard > 1000) throw new Error("Loop limit exceeded (Infinite Loop)");
+              const sig = execBlock(st.body);
+              if (sig === "BREAK") break;
+            }
+          } else if (t.startsWith("for ")) {
+            const fm = t.match(/^for\s+([A-Za-z_]\w*)\s+in\s+(.+):\s*$/);
+            if (!fm) throw new Error("SyntaxError in for loop");
+            const seq = evalExpr(fm[2]);
+            if (!seq || typeof seq[Symbol.iterator] !== "function") throw new Error("TypeError: not iterable");
+            for (const item of seq) {
+              env[fm[1]] = item;
+              const sig = execBlock(st.body);
+              if (sig === "BREAK") break;
+            }
+          } else if (t.startsWith("print(") && t.endsWith(")")) {
+            const inner = t.slice(6, -1).trim();
+            const args = inner ? splitArgs(inner) : [];
+            let sep = " ";
+            const vals = [];
+            args.forEach(a => {
+              const kw = a.match(/^(sep|end)\s*=\s*(.+)$/);
+              if (kw && kw[1] === "sep") sep = String(evalExpr(kw[2]));
+              else if (!kw) vals.push(evalExpr(a));
+            });
+            out.push(vals.map(v => typeof v === "boolean" ? (v ? "True" : "False") : String(v)).join(sep));
+          } else {
+            const aug = t.match(/^([A-Za-z_]\w*)\s*(\+=|-=|\*=|\/\/=|\/=|%=)\s*(.+)$/);
+            if (aug) {
+              const v = evalExpr(aug[3]);
+              if (aug[2] === "+=") env[aug[1]] += v;
+              else if (aug[2] === "-=") env[aug[1]] -= v;
+              else if (aug[2] === "*=") env[aug[1]] *= v;
+              else if (aug[2] === "//=") env[aug[1]] = Math.trunc(env[aug[1]] / v);
+              else if (aug[2] === "/=") env[aug[1]] /= v;
+              else if (aug[2] === "%=") env[aug[1]] %= v;
+            } else {
+              const assign = t.match(/^([A-Za-z_]\w*)\s*=\s*(.+)$/);
+              if (!assign) throw new Error("SyntaxError: " + t);
+              env[assign[1]] = evalExpr(assign[2]);
+            }
+          }
+        }
+        return null;
+      };
+
+      const parsed = parseBlock(0, 0);
+      execBlock(parsed.block);
+      return out.join("\n").trim();
+    }
+
+    async function executeChallengeCodeWithInputs(code, inputs) {
+      let pyodideReady = false;
+      try {
+        await getPyodideEngine();
+        pyodideReady = true;
+      } catch (loadErr) {
+        pyodideReady = false;
+      }
+      if (pyodideReady) {
+        try {
+          const res = await runPythonCode(code, inputs);
+          return { ok: true, output: String(res || "").replace(/\r/g, "").trim() };
+        } catch (pyErr) {
+          return { ok: false, error: pyErr?.message || String(pyErr) };
+        }
+      }
+      try {
+        const res = runMiniPythonInterpreter(code, inputs);
+        return { ok: true, output: String(res || "").replace(/\r/g, "").trim() };
+      } catch (miniErr) {
+        return { ok: false, error: miniErr?.message || String(miniErr) };
+      }
+    }
+
+    async function runAndSubmitChallenge(type, no, points, btn, testInputs) {
       const card = btn.closest(".theory-card") || btn.parentElement;
       const code = document.getElementById(`challengeCode${no}`).value;
       const out = document.getElementById(`challengeOutput${no}`);
@@ -6723,56 +7003,45 @@ __buf.getvalue()`);
         return;
       }
 
-      // Persist draft immediately
       const draftKey = getChallengeDraftKey(type, no) + ":v2";
       safeStorageSet(draftKey, code);
 
-      // Interactive input handling
-      const inputRegex = /input\s*\(\s*(?:['"](.*?)['"])?\s*\)/g;
-      const matches = [...code.matchAll(inputRegex)];
-      const userInputs = [];
-
-      if (matches.length > 0) {
-        btn.disabled = true;
-        btn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> รอข้อมูลนำเข้า...";
-        status.textContent = "💡 โปรแกรมต้องการข้อมูลนำเข้า (input) กรุณาป้อนค่าในกล่องด้านบนแล้วกดส่งค่า";
-        status.style.color = "#38bdf8";
-
-        for (let i = 0; i < matches.length; i++) {
-          const promptText = matches[i][1] || `ข้อมูลนำเข้าลำดับที่ ${i + 1}:`;
-          const enteredVal = await askChallengeInput(inputContainer, promptText, "");
-          userInputs.push(enteredVal);
-        }
-      }
-
       btn.disabled = true;
-      btn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> กำลังรัน Python...";
+      btn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> กำลังประมวลผลโค้ด...";
       out.textContent = "กำลังประมวลผลโค้ด...";
 
-      let replacedCode = code;
-      if (matches.length > 0) {
-        let idx = 0;
-        replacedCode = code.replace(inputRegex, () => {
-          const val = userInputs[idx++] ?? "";
-          return JSON.stringify(val);
-        });
-      }
-
       try {
-        let output = "";
-        let pyodideRan = false;
-        if (window.loadPyodide || pyodideInstance) {
-          try {
-            output = String(await runPythonCode(replacedCode) || "").replace(/\r/g, "").trim();
-            pyodideRan = true;
-          } catch(err) {
-            console.warn("Pyodide run error, falling back:", err);
+        // 1. รันโค้ดของนักเรียน พร้อมรับค่า input() แบบอินเทอร์แอกทีฟถ้าโค้ดมีการเรียกใช้
+        const userInputs = [];
+        let runRes = null;
+        for (let step = 0; step < 10; step++) {
+          runRes = await executeChallengeCodeWithInputs(code, userInputs);
+          if (!runRes.ok && String(runRes.error || "").includes("NEED_MORE_INPUT:")) {
+            const idx = String(runRes.error).indexOf("NEED_MORE_INPUT:");
+            const promptLine = String(runRes.error).slice(idx + "NEED_MORE_INPUT:".length).split("\n")[0].trim();
+            btn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> รอข้อมูลนำเข้า...";
+            status.textContent = "💡 โปรแกรมต้องการข้อมูลนำเข้า (input) กรุณาป้อนค่าในกล่องด้านบนแล้วกดส่งค่า";
+            status.style.color = "#38bdf8";
+            const enteredVal = await askChallengeInput(inputContainer, promptLine || `ข้อมูลนำเข้าลำดับที่ ${userInputs.length + 1}:`, "");
+            userInputs.push(enteredVal);
+            btn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> กำลังประมวลผลโค้ด...";
+          } else {
+            break;
           }
         }
-        if (!pyodideRan) {
-          output = String(runSmartInterpreterFallback(code, userInputs) || "").replace(/\r/g, "").trim();
+
+        if (!runRes || !runRes.ok) {
+          btn.disabled = false;
+          btn.innerHTML = "<i class='bx bx-play'></i> Run และส่งตรวจ";
+          const cleanErr = String(runRes?.error || "SyntaxError");
+          out.textContent = `[ข้อผิดพลาดในโค้ด Python]:\n${cleanErr}`;
+          status.textContent = "โค้ดมีข้อผิดพลาด กรุณาแก้ไขแล้วลองใหม่อีกครั้ง";
+          status.style.color = "#f43f5e";
+          soundFail();
+          return;
         }
 
+        const output = runRes.output || "";
         let displayOut = "";
         if (userInputs.length > 0) {
           displayOut += `[ข้อมูลนำเข้าที่ป้อน]: ${userInputs.join(", ")}\n---\n`;
@@ -6780,7 +7049,15 @@ __buf.getvalue()`);
         displayOut += (output || "(ไม่มีผลลัพธ์จากคำสั่ง print)");
         out.textContent = displayOut;
 
-        runServer("submitCodingChallenge", [sessionToken, type, no, code, output], r => {
+        // 2. รันทดสอบทุกกรณี (Test Cases) บนเครื่องเพื่อส่งผลให้เซิร์ฟเวอร์ตรวจความถูกต้องจริง
+        const testSuites = Array.isArray(testInputs) && testInputs.length ? testInputs : [[]];
+        const caseOutputs = [];
+        for (let i = 0; i < testSuites.length; i++) {
+          const tcRes = await executeChallengeCodeWithInputs(code, testSuites[i]);
+          caseOutputs.push(tcRes.ok ? tcRes.output : ("__PY_ERROR__:" + tcRes.error));
+        }
+
+        runServer("submitCodingChallenge", [sessionToken, type, no, code, output, caseOutputs], r => {
           btn.disabled = false;
 
           if (!r || !r.success) {
