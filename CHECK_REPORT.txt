@@ -1,0 +1,14 @@
+CHECK REPORT – FINAL GATE + ADMIN REPAIR
+
+Implemented:
+- Separate Final Course Quiz (10 questions, pass threshold 70/100)
+- Unlock gate: IfElseStatus + WhileStatus + ForLoopStatus all COMPLETED, and ArenaStatus (Progress col 10) COMPLETED
+- Save result to existing QuizResults sheet as "Final Course Quiz"
+- Append FinalQuizStatus as Progress column 13, preserving existing columns
+- Admin login keeps dashboard wrapper visible so lessonArea inside it can render
+- Admin overview progress mapping matches frontend property names
+
+Verification pending:
+- Apps Script live deployment and authorization
+- Real account/admin browser testing
+- Actual Sheets schema/data check
